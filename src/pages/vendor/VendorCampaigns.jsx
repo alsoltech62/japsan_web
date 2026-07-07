@@ -10,8 +10,22 @@ export default function VendorCampaigns() {
     if (!campaign.message) return toast.error('Enter a message');
     setLoading(true);
     try {
-      await sendVendorCampaign(campaign);
-      toast.success('Campaign sent successfully!');
+      const res = await sendVendorCampaign(campaign);
+      toast.success(res?.data?.message || 'Campaign sent successfully!');
+      
+      // If it's a whatsapp campaign and backend returns numbers, optionally open wa.me links
+      if (campaign.type === 'whatsapp' && res?.data?.data?.whatsapp_numbers) {
+        const numbers = res.data.data.whatsapp_numbers;
+        if (numbers.length > 0) {
+          // Open first number in Whatsapp Web for now as an example
+          const text = encodeURIComponent(campaign.message);
+          window.open(`https://wa.me/${numbers[0].replace(/\D/g,'')}?text=${text}`, '_blank');
+          if (numbers.length > 1) {
+             toast.success(`Redirected for 1st customer. ${numbers.length - 1} more in queue.`);
+          }
+        }
+      }
+      
       setCampaign({ ...campaign, message: '' });
     } catch (err) {
       toast.error('Failed to send campaign');

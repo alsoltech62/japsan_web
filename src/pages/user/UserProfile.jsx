@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { getProfile, updateProfile } from '../../services/api';
+import { getProfile, updateProfile, uploadFile } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ export default function UserProfile() {
   const [editing, setEditing] = useState(false);
   const [form, setForm]       = useState({});
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const { logout, updateUser }= useAuth();
   const navigate              = useNavigate();
 
@@ -27,6 +28,27 @@ export default function UserProfile() {
     } catch (err) { toast.error(err.response?.data?.message || 'Update failed'); }
   }
 
+  const handleFileUpload = async (e, field) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await uploadFile(formData);
+      if (res.data.success) {
+        setForm(f => ({ ...f, [field]: res.data.data.url }));
+        toast.success('File uploaded successfully');
+      } else {
+        toast.error('File upload failed');
+      }
+    } catch (err) {
+      toast.error('Error uploading file');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (loading) return <div className="p-6 space-y-4">{[1,2,3].map(i=><div key={i} className="h-16 bg-slate-200 rounded-2xl animate-pulse"/>)}</div>;
 
   return (
@@ -42,8 +64,11 @@ export default function UserProfile() {
         )}
         {editing ? (
           <div className="space-y-3 text-left">
-            <div><label className="text-sm font-medium text-slate-700">Photo URL</label>
-              <input className="input-field mt-1" value={form.profile_photo} onChange={e=>setForm(f=>({...f,profile_photo:e.target.value}))} /></div>
+            <div><label className="text-sm font-medium text-slate-700">Profile Photo</label>
+              <input type="file" className="input-field mt-1 w-full text-sm" accept="image/*" onChange={e=>handleFileUpload(e, 'profile_photo')} />
+              {uploading && <p className="text-xs text-blue-500 mt-1">Uploading...</p>}
+              {form.profile_photo && <p className="text-xs text-green-500 mt-1 truncate">File selected: {form.profile_photo.split('/').pop()}</p>}
+            </div>
             <div><label className="text-sm font-medium text-slate-700">Name</label>
               <input className="input-field mt-1" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} /></div>
             <div><label className="text-sm font-medium text-slate-700">Email</label>
@@ -54,8 +79,11 @@ export default function UserProfile() {
               <input className="input-field mt-1" value={form.area} onChange={e=>setForm(f=>({...f,area:e.target.value}))} /></div>
             <div><label className="text-sm font-medium text-slate-700">Date of Birth</label>
               <input className="input-field mt-1" type="date" value={form.dob} onChange={e=>setForm(f=>({...f,dob:e.target.value}))} /></div>
-            <div><label className="text-sm font-medium text-slate-700">KYC Document (URL)</label>
-              <input className="input-field mt-1" value={form.kyc_document} onChange={e=>setForm(f=>({...f,kyc_document:e.target.value}))} placeholder="Aadhar/PAN Image URL" /></div>
+            <div><label className="text-sm font-medium text-slate-700">KYC Document (Aadhar/PAN)</label>
+              <input type="file" className="input-field mt-1 w-full text-sm" accept="image/*,.pdf" onChange={e=>handleFileUpload(e, 'kyc_document')} />
+              {uploading && <p className="text-xs text-blue-500 mt-1">Uploading...</p>}
+              {form.kyc_document && <p className="text-xs text-green-500 mt-1 truncate">File selected: {form.kyc_document.split('/').pop()}</p>}
+            </div>
             <div className="flex gap-3">
               <button onClick={handleSave} className="btn-primary flex-1">Save</button>
               <button onClick={()=>setEditing(false)} className="btn-secondary flex-1">Cancel</button>

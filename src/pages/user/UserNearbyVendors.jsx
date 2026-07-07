@@ -9,14 +9,29 @@ export default function UserNearbyVendors() {
   useEffect(() => {
     // Simulate getting location
     getNearbyVendors({ lat: 22.5726, lng: 88.3639 })
-      .then(res => setVendors(res.data.data || []))
+      .then(res => {
+        let data = res.data.data || [];
+        if (data.length === 0) {
+          data = [
+            { id: 'dummy1', business_name: 'Dummy Example Vendor 1', city: 'Example City', state: 'EX', cashback_percent: 5, distance: 0.8 },
+            { id: 'dummy2', business_name: 'Dummy Grocery Store', city: 'Example City', state: 'EX', cashback_percent: 10, distance: 1.5 },
+            { id: 'dummy3', business_name: 'Example Cafe', city: 'Example City', state: 'EX', cashback_percent: 2, distance: 2.1 }
+          ];
+        }
+        setVendors(data);
+      })
       .catch(() => toast.error('Failed to load nearby vendors'))
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="p-4 space-y-4 fade-in">
-      <h2 className="text-xl font-bold text-slate-800">Nearby Vendors</h2>
+      <div className="flex items-center gap-3">
+        <button onClick={() => window.history.back()} className="text-slate-500 hover:bg-slate-100 p-2 rounded-full">
+          <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <h2 className="text-xl font-bold text-slate-800">Nearby Vendors</h2>
+      </div>
       <p className="text-sm text-slate-500">Discover shops around you accepting Japsan Coins</p>
 
       {loading ? (

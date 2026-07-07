@@ -6,7 +6,8 @@ export default function VendorPayment() {
   const [phone, setPhone]         = useState('');
   const [bill, setBill]           = useState('');
   const [coinsToUse, setCoinsToUse] = useState(0);
-  const [method, setMethod]       = useState('cash');
+  const [method, setMethod]       = useState('upi');
+  const [manualBonus, setManualBonus] = useState('');
   const [loading, setLoading]     = useState(false);
   const [result, setResult]       = useState(null);
 
@@ -19,7 +20,14 @@ export default function VendorPayment() {
     if (!billAmt || billAmt <= 0) return toast.error('Enter bill amount');
     setLoading(true);
     try {
-      const res = await processPayment({ user_phone: phone, bill_amount: billAmt, coins_to_use: coinsToUse, payment_method: method });
+      const payload = { 
+        user_phone: phone, 
+        bill_amount: billAmt, 
+        coins_to_use: coinsToUse, 
+        payment_method: method,
+        manual_bonus_coins: manualBonus ? parseFloat(manualBonus) : 0
+      };
+      const res = await processPayment(payload);
       setResult(res.data.data);
       toast.success('Payment processed!');
     } catch (err) { toast.error(err.response?.data?.message || 'Payment failed'); }
@@ -45,13 +53,18 @@ export default function VendorPayment() {
         ))}
         <p className="text-xs text-slate-400 text-center">Ref: {result.transaction_ref}</p>
       </div>
-      <button onClick={() => { setResult(null); setPhone(''); setBill(''); setCoinsToUse(0); }} className="btn-primary mt-6">New Transaction</button>
+      <button onClick={() => { setResult(null); setPhone(''); setBill(''); setCoinsToUse(0); setManualBonus(''); }} className="btn-primary mt-6">New Transaction</button>
     </div>
   );
 
   return (
     <div className="p-4 space-y-4 fade-in">
-      <h2 className="text-xl font-bold text-slate-800">💳 Process Payment</h2>
+      <div className="flex items-center gap-3">
+        <button onClick={() => window.history.back()} className="text-slate-500 hover:bg-slate-100 p-2 rounded-full">
+          <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <h2 className="text-xl font-bold text-slate-800">💳 Process Payment</h2>
+      </div>
 
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-2">Customer Phone Number</label>
@@ -85,10 +98,22 @@ export default function VendorPayment() {
         </div>
       )}
 
+      {billAmt > 0 && (
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">Manual Reward / Bonus Coins (Optional)</label>
+          <div className="flex gap-2">
+            <input className="input-field flex-1" type="number" placeholder="Enter extra coins to give" value={manualBonus}
+              onChange={e=>setManualBonus(e.target.value)} min="0" />
+            <div className="flex items-center px-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-600 font-bold">🪙 JC</div>
+          </div>
+          <p className="text-xs text-slate-400 mt-1">Leave empty to use automatic Smart Rules & Cashback.</p>
+        </div>
+      )}
+
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-2">Payment Method</label>
         <div className="flex gap-2">
-          {[['cash','💵 Cash'],['upi','📱 UPI'],['card','💳 Card']].map(([val,label])=>(
+          {[['upi','📱 UPI'],['card','💳 Card']].map(([val,label])=>(
             <button key={val} onClick={()=>setMethod(val)}
               className={`flex-1 py-2 rounded-xl text-sm font-medium border-2 transition-all ${method===val?'border-orange-500 bg-orange-50 text-orange-600':'border-slate-200 text-slate-600'}`}>
               {label}

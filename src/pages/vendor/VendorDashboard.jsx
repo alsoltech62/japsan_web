@@ -52,14 +52,15 @@ export default function VendorDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-4 gap-2">
         {[
+          { icon:'👤', label:'Profile', to:'/vendor/profile', color:'from-blue-400 to-blue-600', desc:'My Info' },
           { icon:'💳', label:'Process', to:'/vendor/payment', color:'from-orange-400 to-orange-600', desc:'Accept' },
           { icon:'📱', label:'Show QR', to:'/vendor/qr',      color:'from-purple-400 to-purple-600',desc:'QR Code' },
           { icon:'🏦', label:'Withdraw',to:'/vendor/withdraw', color:'from-green-400 to-green-600', desc:'To Bank' },
           { icon:'⚙️', label:'Rewards', to:'/vendor/reward-settings', color:'from-pink-400 to-pink-600', desc:'Settings' },
           { icon:'🎁', label:'Offers',  to:'/vendor/offers',  color:'from-yellow-400 to-yellow-600', desc:'Promos' },
-          { icon:'📢', label:'Campaign',to:'/vendor/campaigns',color:'from-blue-400 to-blue-600', desc:'Notify' },
+          { icon:'📢', label:'Campaign',to:'/vendor/campaigns',color:'from-red-400 to-red-600', desc:'Notify' },
         ].map(({icon,label,to,color,desc}) => (
           <button key={to} onClick={() => navigate(to)}
             className="bg-white rounded-2xl p-2 text-center border border-slate-100 hover:border-orange-200 hover:shadow transition-all group flex flex-col items-center">

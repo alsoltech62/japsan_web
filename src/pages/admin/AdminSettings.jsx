@@ -3,11 +3,22 @@ import toast from 'react-hot-toast';
 import { getSettings, updateSettings } from '../../services/api';
 
 const GROUPS = {
-  'Coin Economy': ['coin_purchase_price_inr','redemption_rate_min','redemption_rate_max','redemption_rate_current','coin_expiry_days'],
+  'Reward Engine': [
+      'joining_bonus_user_l1', 'joining_bonus_user_l2', 'joining_bonus_user_l3',
+      'joining_bonus_vendor_direct', 'joining_bonus_vendor_l2', 'joining_bonus_vendor_l3', 'joining_bonus_vendor_active',
+      'txn_reward_user_l1', 'txn_reward_user_l2', 'txn_reward_user_l3',
+      'txn_reward_vendor_l1', 'txn_reward_vendor_l2', 'txn_reward_vendor_l3', 'txn_reward_min_payment',
+      'customer_referral_by_vendor_signup', 'customer_referral_by_vendor_txn_count', 'customer_referral_by_vendor_txn_bonus',
+      'loyalty_program_visits_1', 'loyalty_program_bonus_1', 'loyalty_program_visits_2', 'loyalty_program_bonus_2'
+  ],
+  'Holding & Ranks': [
+      'holding_reward_tiers', 'vendor_coin_lock_days', 'coin_expiry_days', 'rank_criteria', 'vendor_rank_criteria', 'daily_holding_reward_percent', 'min_balance_for_holding_reward'
+  ],
+  'Coin Economy': ['coin_purchase_price_inr','redemption_rate_min','redemption_rate_max','redemption_rate_current'],
+  'Limits & Caps': ['min_payment_amount', 'min_withdrawal_amount', 'daily_redemption_cap','vendor_distribution_limit'],
   'Bonus & Cashback': ['bonus_threshold','bonus_coins','cashback_percent','max_cashback_percent'],
-  'Limits & Caps': ['daily_redemption_cap','vendor_distribution_limit','min_withdrawal_amount'],
   'Fees & Settlement': ['vendor_withdrawal_fee_percent','settlement_delay_days'],
-  'Referral System': ['referral_coins_user_user','referral_coins_vendor_user','referral_coins_vendor_vendor','referral_lock_days','referral_unlock_on_transaction'],
+  'Referral System': ['max_referral_levels','referral_coins_user_user','referral_coins_vendor_user','referral_coins_vendor_vendor','referral_lock_days','referral_unlock_on_transaction'],
   'Feature Toggles': ['feature_referral','feature_qr_payment','feature_whatsapp','feature_notifications','feature_coin_purchase'],
   'Platform Info': ['platform_name','support_phone','support_email','otp_expiry_minutes','max_otp_attempts'],
 };
@@ -97,6 +108,11 @@ export default function AdminSettings() {
                       className={`relative w-12 h-6 rounded-full transition-all ${getValue(key)==='true'?'bg-green-500':'bg-slate-300'}`}>
                       <div className={`absolute w-5 h-5 bg-white rounded-full top-0.5 transition-all shadow ${getValue(key)==='true'?'right-0.5':'left-0.5'}`}/>
                     </button>
+                  ) : s.type === 'json' ? (
+                    <textarea 
+                      className={`w-64 h-24 px-3 py-2 border-2 rounded-xl text-xs font-mono focus:outline-none transition-all ${isDirty?'border-orange-400 bg-white':'border-slate-200'}`}
+                      value={getValue(key)} onChange={e => handleChange(key, e.target.value)}
+                    />
                   ) : (
                     <input type={s.type==='number'?'number':'text'}
                       className={`w-36 px-3 py-2 border-2 rounded-xl text-sm font-medium text-right focus:outline-none transition-all ${isDirty?'border-orange-400 bg-white':'border-slate-200'}`}

@@ -32,6 +32,7 @@ import VendorReferral from './pages/vendor/VendorReferral';
 import VendorRewardSettings from './pages/vendor/VendorRewardSettings';
 import VendorOfferManagement from './pages/vendor/VendorOfferManagement';
 import VendorCampaigns from './pages/vendor/VendorCampaigns';
+import VendorProfile from './pages/vendor/VendorProfile';
 
 // Admin
 import AdminLayout from './components/admin/AdminLayout';
@@ -71,39 +72,40 @@ export default function App() {
 
           {/* USER ROUTES */}
           <Route path="/user" element={<ProtectedRoute allowedRoles={['user']}><UserLayout /></ProtectedRoute>}>
-            <Route path="dashboard"     element={<UserDashboard />} />
-            <Route path="wallet"        element={<UserWallet />} />
-            <Route path="buy-coins"     element={<UserBuyCoins />} />
-            <Route path="referral"      element={<UserReferral />} />
+            <Route path="dashboard" element={<UserDashboard />} />
+            <Route path="wallet" element={<UserWallet />} />
+            <Route path="buy-coins" element={<UserBuyCoins />} />
+            <Route path="referral" element={<UserReferral />} />
             <Route path="notifications" element={<UserNotifications />} />
-            <Route path="profile"       element={<UserProfile />} />
-            <Route path="scan-pay"      element={<UserScanAndPay />} />
-            <Route path="nearby"        element={<UserNearbyVendors />} />
-            <Route path="network"       element={<UserNetwork />} />
+            <Route path="profile" element={<UserProfile />} />
+            <Route path="scan-pay" element={<UserScanAndPay />} />
+            <Route path="nearby" element={<UserNearbyVendors />} />
+            <Route path="network" element={<UserNetwork />} />
           </Route>
 
           {/* VENDOR ROUTES */}
           <Route path="/vendor" element={<ProtectedRoute allowedRoles={['vendor']}><VendorLayout /></ProtectedRoute>}>
-            <Route path="dashboard"     element={<VendorDashboard />} />
-            <Route path="roi"           element={<VendorROI />} />
-            <Route path="payment"       element={<VendorPayment />} />
-            <Route path="qr"            element={<VendorQRCode />} />
-            <Route path="wallet"        element={<VendorWallet />} />
-            <Route path="withdraw"      element={<VendorWithdraw />} />
-            <Route path="referral"      element={<VendorReferral />} />
+            <Route path="dashboard" element={<VendorDashboard />} />
+            <Route path="roi" element={<VendorROI />} />
+            <Route path="payment" element={<VendorPayment />} />
+            <Route path="qr" element={<VendorQRCode />} />
+            <Route path="wallet" element={<VendorWallet />} />
+            <Route path="withdraw" element={<VendorWithdraw />} />
+            <Route path="referral" element={<VendorReferral />} />
             <Route path="reward-settings" element={<VendorRewardSettings />} />
-            <Route path="offers"        element={<VendorOfferManagement />} />
-            <Route path="campaigns"     element={<VendorCampaigns />} />
+            <Route path="offers" element={<VendorOfferManagement />} />
+            <Route path="campaigns" element={<VendorCampaigns />} />
+            <Route path="profile" element={<VendorProfile />} />
           </Route>
 
           {/* ADMIN ROUTES */}
-          <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin','super_admin']}><AdminLayout /></ProtectedRoute>}>
-            <Route path="dashboard"     element={<AdminDashboard />} />
-            <Route path="settings"      element={<AdminSettings />} />
-            <Route path="users"         element={<AdminUsers />} />
-            <Route path="vendors"       element={<AdminVendors />} />
-            <Route path="withdrawals"   element={<AdminWithdrawals />} />
-            <Route path="transactions"  element={<AdminTransactions />} />
+          <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminLayout /></ProtectedRoute>}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="settings" element={<AdminSettings />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="vendors" element={<AdminVendors />} />
+            <Route path="withdrawals" element={<AdminWithdrawals />} />
+            <Route path="transactions" element={<AdminTransactions />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

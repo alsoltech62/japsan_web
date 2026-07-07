@@ -61,7 +61,12 @@ export default function UserBuyCoins() {
 
   return (
     <div className="p-4 space-y-4 fade-in">
-      <h2 className="text-xl font-bold text-slate-800">🛒 Buy Coins</h2>
+      <div className="flex items-center gap-3">
+        <button onClick={() => window.history.back()} className="text-slate-500 hover:bg-slate-100 p-2 rounded-full">
+          <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <h2 className="text-xl font-bold text-slate-800">🛒 Buy Coins</h2>
+      </div>
       {wallet && (
         <div className="bg-orange-50 rounded-2xl p-3 flex items-center gap-2 text-sm">
           <span>🪙</span>
@@ -107,7 +112,7 @@ export default function UserBuyCoins() {
       <div>
         <p className="text-sm font-semibold text-slate-600 mb-2">Payment Method</p>
         <div className="flex gap-2">
-          {[['upi','UPI'],['card','Card'],['cash','Cash']].map(([val,label]) => (
+          {[['upi','UPI'],['card','Card']].map(([val,label]) => (
             <button key={val} onClick={()=>setMethod(val)}
               className={`flex-1 py-2 rounded-xl text-sm font-medium border-2 transition-all ${method===val?'border-orange-500 bg-orange-50 text-orange-600':'border-slate-200 text-slate-600'}`}>
               {label}

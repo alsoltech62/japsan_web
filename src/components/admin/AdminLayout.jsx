@@ -4,18 +4,18 @@ import { useAuth } from '../../context/AuthContext';
 import { FiHome, FiSettings, FiUsers, FiGrid, FiDollarSign, FiList, FiMenu, FiX, FiLogOut } from 'react-icons/fi';
 
 const navItems = [
-  { to:'/admin/dashboard',    icon:<FiHome size={18}/>,       label:'Dashboard' },
-  { to:'/admin/users',        icon:<FiUsers size={18}/>,      label:'Users' },
-  { to:'/admin/vendors',      icon:<FiGrid size={18}/>,       label:'Vendors' },
-  { to:'/admin/withdrawals',  icon:<FiDollarSign size={18}/>, label:'Withdrawals' },
-  { to:'/admin/transactions', icon:<FiList size={18}/>,       label:'Transactions' },
-  { to:'/admin/settings',     icon:<FiSettings size={18}/>,   label:'Settings' },
+  { to: '/admin/dashboard', icon: <FiHome size={18} />, label: 'Dashboard' },
+  { to: '/admin/users', icon: <FiUsers size={18} />, label: 'Users' },
+  { to: '/admin/vendors', icon: <FiGrid size={18} />, label: 'Vendors' },
+  { to: '/admin/withdrawals', icon: <FiDollarSign size={18} />, label: 'Withdrawals' },
+  { to: '/admin/transactions', icon: <FiList size={18} />, label: 'Transactions' },
+  { to: '/admin/settings', icon: <FiSettings size={18} />, label: 'Settings' },
 ];
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
-  const navigate         = useNavigate();
-  const [open, setOpen]  = useState(false);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-slate-50">
@@ -40,18 +40,18 @@ export default function AdminLayout() {
         </nav>
         <div className="p-4 border-t border-slate-800">
           <button onClick={() => { logout(); navigate('/login'); }} className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-xl text-sm font-medium transition-all">
-            <FiLogOut size={18}/>Logout
+            <FiLogOut size={18} />Logout
           </button>
         </div>
       </aside>
 
       {/* Mobile overlay */}
-      {open && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setOpen(false)}/>}
+      {open && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setOpen(false)} />}
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
         <header className="bg-white border-b border-slate-100 px-4 py-3 flex items-center gap-3 lg:hidden sticky top-0 z-20">
-          <button onClick={() => setOpen(true)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg"><FiMenu size={20}/></button>
+          <button onClick={() => setOpen(true)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg"><FiMenu size={20} /></button>
           <span className="font-bold text-slate-800">Japsan Admin</span>
         </header>
         <main className="flex-1 overflow-auto p-4 lg:p-6"><Outlet /></main>

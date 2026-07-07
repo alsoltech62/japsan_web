@@ -42,9 +42,11 @@ export const registerVendor = (data) => api.post('/auth/register_vendor.php', da
 // ── USER ──────────────────────────────────────────────────────
 export const getProfile = () => api.get('/users/profile.php');
 export const updateProfile = (data) => api.put('/users/profile.php', data);
+export const uploadFile = (data) => api.post('/upload.php', data, { headers: { 'Content-Type': 'multipart/form-data' } });
 export const getNearbyVendors = (params) => api.get('/users/nearby_vendors.php', { params });
 export const scanVendorQR = (vendorId) => api.get(`/qr/scan.php?vendor_id=${vendorId}`);
 export const userPayVendor = (data) => api.post('/transactions/user_pay.php', data);
+export const userTransfer = (data) => api.post('/transactions/user_transfer.php', data);
 export const getNetwork = () => api.get('/users/network.php');
 
 // ── WALLET ────────────────────────────────────────────────────
@@ -56,6 +58,8 @@ export const buyCoins = (data) => api.post('/transactions/buy_coins.php', data);
 export const getTransactions = (params) => api.get('/transactions/history.php', { params });
 
 // ── VENDOR ────────────────────────────────────────────────────
+export const getVendorProfile = () => api.get('/vendors/profile.php');
+export const updateVendorProfile = (data) => api.put('/vendors/profile.php', data);
 export const getROIDashboard = (params) => api.get('/vendors/roi_dashboard.php', { params });
 export const getVendorQR = () => api.get('/qr/generate.php');
 export const requestWithdraw = (data) => api.post('/vendors/withdraw.php', data);

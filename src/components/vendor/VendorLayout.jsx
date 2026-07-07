@@ -1,7 +1,7 @@
 import React from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiHome, FiTrendingUp, FiCreditCard, FiGrid, FiDollarSign, FiUsers, FiLogOut } from 'react-icons/fi';
+import { FiHome, FiTrendingUp, FiCreditCard, FiGrid, FiDollarSign, FiUsers, FiLogOut, FiChevronLeft } from 'react-icons/fi';
 import NotificationBadge from '../common/NotificationBadge';
 
 const navItems = [
@@ -16,10 +16,16 @@ const navItems = [
 export default function VendorLayout() {
   const { user, logout } = useAuth();
   const navigate         = useNavigate();
+  const location         = useLocation();
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <header className="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
+          {location.pathname !== '/vendor/dashboard' && (
+            <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-full transition-all">
+              <FiChevronLeft size={24} />
+            </button>
+          )}
           <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm">🏪</div>
           <div>
             <p className="font-bold text-slate-800 text-sm leading-tight">Vendor Panel</p>
