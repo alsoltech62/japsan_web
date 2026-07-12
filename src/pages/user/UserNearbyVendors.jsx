@@ -12,11 +12,20 @@ export default function UserNearbyVendors() {
       .then(res => {
         let data = res.data.data || [];
         if (data.length === 0) {
-          data = [
-            { id: 'dummy1', business_name: 'Dummy Example Vendor 1', city: 'Example City', state: 'EX', cashback_percent: 5, distance: 0.8 },
-            { id: 'dummy2', business_name: 'Dummy Grocery Store', city: 'Example City', state: 'EX', cashback_percent: 10, distance: 1.5 },
-            { id: 'dummy3', business_name: 'Example Cafe', city: 'Example City', state: 'EX', cashback_percent: 2, distance: 2.1 }
-          ];
+          data.push({
+            id: 'dummy',
+            business_name: 'Japsan SuperMart (Demo)',
+            business_address: 'Main Market Area',
+            city: 'Demo City',
+            owner_name: 'Demo Vendor',
+            distance: '1.2',
+            cashback_percent: '10',
+            visiting_card_photo: 'https://placehold.co/600x400/png?text=Visiting+Card',
+            latest_offer: {
+              title: 'Mega Diwali Sale',
+              description: 'Get 50% Off on Groceries and daily essentials up to ₹500.'
+            }
+          });
         }
         setVendors(data);
       })
@@ -32,7 +41,7 @@ export default function UserNearbyVendors() {
         </button>
         <h2 className="text-xl font-bold text-slate-800">Nearby Vendors</h2>
       </div>
-      <p className="text-sm text-slate-500">Discover shops around you accepting Japsan Coins</p>
+      <p className="text-sm text-slate-500">Discover shops around you accepting Japsan Pays</p>
 
       {loading ? (
         <div className="space-y-3">
@@ -44,16 +53,38 @@ export default function UserNearbyVendors() {
         <div className="space-y-3">
           {vendors.map(v => (
             <div key={v.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-start gap-4">
-              <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xl shrink-0">
-                🏪
-              </div>
+              {v.profile_photo ? (
+                <img src={v.profile_photo} alt="logo" className="w-12 h-12 rounded-full object-cover shrink-0" />
+              ) : (
+                <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xl shrink-0">
+                  🏪
+                </div>
+              )}
               <div className="flex-1">
                 <h3 className="font-bold text-slate-800 text-sm">{v.business_name || v.owner_name}</h3>
-                <p className="text-xs text-slate-500">{v.city}, {v.state}</p>
+                <p className="text-xs text-slate-500">{[v.business_address, v.city].filter(Boolean).join(', ')}</p>
+                
+                {v.latest_offer && (
+                  <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-2">
+                    <p className="text-[10px] font-bold text-green-700 uppercase mb-0.5">🔥 Active Offer</p>
+                    <p className="text-xs font-semibold text-green-800">{v.latest_offer.title}</p>
+                    {v.latest_offer.description && (
+                      <p className="text-[10px] text-green-600 line-clamp-2 mt-0.5">{v.latest_offer.description}</p>
+                    )}
+                  </div>
+                )}
+                
                 <div className="mt-2 flex items-center gap-2">
                   <span className="badge badge-success">{v.cashback_percent}% Cashback</span>
                   <span className="text-xs text-slate-400">~{v.distance || '1.2'} km</span>
                 </div>
+                
+                {v.visiting_card_photo && (
+                  <div className="mt-3">
+                    <p className="text-xs text-slate-400 mb-1 font-medium">Visiting Card</p>
+                    <img src={v.visiting_card_photo} alt="Visiting Card" className="w-full max-w-[200px] h-auto rounded-lg border border-slate-200 shadow-sm" />
+                  </div>
+                )}
               </div>
             </div>
           ))}

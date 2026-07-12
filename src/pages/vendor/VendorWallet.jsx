@@ -20,11 +20,55 @@ export default function VendorWallet() {
     <div className="p-4 space-y-4 fade-in">
       <h2 className="text-xl font-bold text-slate-800">💼 Vendor Wallet</h2>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="coin-card p-4 text-white">
-          <p className="text-xs text-slate-400">Coin Balance</p>
-          <p className="text-2xl font-black text-yellow-400">{Number(w.coin_balance||0).toLocaleString()} 🪙</p>
+      <div className="bg-slate-800 text-white rounded-2xl overflow-hidden shadow-lg border border-slate-700">
+        <div className="p-4 bg-slate-900 border-b border-slate-700 text-center font-bold text-lg">
+          My Wallets
         </div>
+        
+        {/* Main Wallet */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">💳</div>
+            <div>
+              <p className="font-bold">Main Wallet (JC)</p>
+              <p className="text-xs text-green-400">Withdrawable (Purchased JC)</p>
+            </div>
+          </div>
+          <p className="font-bold text-blue-400">{data?.multi_wallet?.main_wallet || 0} JC</p>
+        </div>
+
+        {/* Vendor Settlement Wallet */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl">🏪</div>
+            <div>
+              <p className="font-bold">Vendor Settlement Wallet</p>
+              <p className="text-xs text-green-400">Withdrawable (Purchased JC)</p>
+            </div>
+          </div>
+          <p className="font-bold text-orange-400">{data?.multi_wallet?.vendor_settlement_wallet || 0} JC</p>
+        </div>
+
+        {/* Referral Wallet */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xl">👥</div>
+            <div>
+              <p className="font-bold">Referral Reward Wallet</p>
+              <p className="text-xs text-red-400">Non-Withdrawable</p>
+            </div>
+          </div>
+          <p className="font-bold text-green-400">{data?.multi_wallet?.referral_wallet || 0} JC</p>
+        </div>
+
+        {/* Total Balance */}
+        <div className="p-4 bg-slate-900 flex justify-between items-center">
+          <p className="font-bold">Total Balance (All Wallets)</p>
+          <p className="font-bold text-lg">{data?.multi_wallet?.total_balance || 0} JC</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 gap-3">
         <div className="bg-white rounded-2xl p-4 border border-slate-100">
           <p className="text-xs text-slate-400">Cash Wallet</p>
           <p className="text-2xl font-black text-green-600">₹{Number(w.cash_wallet_balance||0).toFixed(2)}</p>

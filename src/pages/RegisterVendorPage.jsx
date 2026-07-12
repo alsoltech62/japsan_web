@@ -91,9 +91,9 @@ export default function RegisterVendorPage() {
     <div className="min-h-screen bg-slate-50 py-8 px-4">
       <div className="max-w-lg mx-auto">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">🏪</div>
+          <img src="/JapSan.png" alt="Japsan Logo" className="w-16 h-16 mb-3 mx-auto rounded-2xl shadow-md" />
           <h1 className="text-3xl font-black text-slate-800">Register as Vendor</h1>
-          <p className="text-slate-500 mt-2">Join Japsan Coin and grow your business</p>
+          <p className="text-slate-500 mt-2">Join Japsan Pay and grow your business</p>
         </div>
 
         {/* Stepper */}

@@ -4,33 +4,40 @@ export default {
   theme: {
     extend: {
       colors: {
+        slate: {
+          50: '#F8F7F3', // App Background
+          100: '#F3F5F8', // Secondary Background
+          200: '#ECECEC', // Card Border
+          300: '#E5E8EF', // Light Border
+          400: '#8A919F', // Light Text
+          500: '#5E6472', // Secondary Text
+          600: '#1D376B', // Secondary Navy
+          700: '#1D376B',
+          800: '#0F2247', // Primary Navy
+          900: '#09152F', // Dark Navy
+        },
+        orange: {
+          50: '#FDFBF7',
+          100: '#F9F2E3',
+          200: '#F2E2C0',
+          300: '#E7C46A', // Luxury Gold
+          400: '#E7C46A', // Luxury Gold
+          500: '#C89B3C', // Premium Gold (Buttons, primary)
+          600: '#A97823', // Deep Gold
+          700: '#A97823', // Deep Gold
+          800: '#8B611B',
+          900: '#6C4A13',
+        },
+        blue: {
+          50: '#F3F5F8',
+          100: '#E5E8EF',
+          400: '#1D376B',
+          500: '#0F2247', // Map primary blues to Navy
+          600: '#09152F',
+        },
         primary: {
-          50:  '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f97316',
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
-        },
-        gold: {
-          50:  '#fefce8',
-          100: '#fef9c3',
-          200: '#fef08a',
-          300: '#fde047',
-          400: '#facc15',
-          500: '#eab308',
-          600: '#ca8a04',
-          700: '#a16207',
-          800: '#854d0e',
-          900: '#713f12',
-        },
-        dark: {
-          50: '#f8fafc',
-          900: '#0f172a',
+          navy: '#0F2247',
+          gold: '#C89B3C'
         }
       },
       fontFamily: {

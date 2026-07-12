@@ -31,7 +31,7 @@ export default function VendorReferral() {
           <button onClick={() => { navigator.clipboard.writeText(data?.share_link||''); toast.success('Link copied!'); }}
             className="flex-1 bg-white/10 hover:bg-white/20 rounded-xl py-2 text-sm font-medium">📋 Copy Link</button>
           <button onClick={() => {
-            const msg = encodeURIComponent(`Join Japsan Coin as a vendor! Use my referral code: ${data?.referral_code}\n${data?.share_link}`);
+            const msg = encodeURIComponent(`Join Japsan Pay as a vendor! Use my referral code: ${data?.referral_code}\n${data?.share_link}`);
             window.open(`https://wa.me/?text=${msg}`, '_blank');
           }} className="flex-1 bg-green-500/80 hover:bg-green-500 rounded-xl py-2 text-sm font-medium">💬 WhatsApp</button>
         </div>

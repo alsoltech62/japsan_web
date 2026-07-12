@@ -19,22 +19,22 @@ export default function VendorLayout() {
   const location         = useLocation();
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      <header className="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <header className="bg-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-3">
           {location.pathname !== '/vendor/dashboard' && (
-            <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-full transition-all">
+            <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-slate-800 hover:bg-slate-100 rounded-full transition-all">
               <FiChevronLeft size={24} />
             </button>
           )}
-          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm">🏪</div>
+          <img src="/JapSan.png" alt="Logo" className="w-8 h-8 rounded-lg" />
           <div>
-            <p className="font-bold text-slate-800 text-sm leading-tight">Vendor Panel</p>
-            <p className="text-xs text-slate-400">{user?.name}</p>
+            <p className="font-bold text-slate-900 text-sm leading-tight">Vendor Panel</p>
+            <p className="text-[10px] text-slate-500 font-medium">{user?.name}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <NotificationBadge userType="vendor" />
-          <button onClick={() => { logout(); navigate('/login'); }} className="p-2 text-slate-400 hover:text-red-500 rounded-xl hover:bg-red-50 transition-all"><FiLogOut size={18}/></button>
+          <button onClick={() => { logout(); navigate('/login'); }} className="p-2 text-slate-600 hover:text-red-500 rounded-xl hover:bg-red-50 transition-all"><FiLogOut size={18}/></button>
         </div>
       </header>
       <main className="flex-1 pb-20 overflow-auto"><Outlet /></main>

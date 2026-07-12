@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
       const res = await verifyOtp({ phone, otp, user_type: userType, purpose: 'login', name, email, referral_code: refCode });
       const { token, profile } = res.data.data;
       login(token, profile);
-      toast.success('Welcome to Japsan Coin!');
+      toast.success('Welcome to Japsan Pay!');
       if (profile.role === 'user')   navigate('/user/dashboard');
       else if (profile.role === 'vendor') navigate('/vendor/dashboard');
       else navigate('/admin/dashboard');
@@ -57,11 +57,11 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex" style={{background:'linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#0f172a 100%)'}}>
+    <div className="min-h-screen flex bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Left Brand Panel */}
       <div className="hidden lg:flex flex-col justify-center items-center w-1/2 p-12 text-white">
-        <div className="text-6xl mb-6 animate-float">🪙</div>
-        <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">Japsan Coin</h1>
+        <img src="/JapSan.png" alt="Japsan Logo" className="w-24 h-24 mb-6 animate-float rounded-3xl shadow-lg" />
+        <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-orange-300 via-orange-500 to-orange-700 bg-clip-text text-transparent">Japsan Pay</h1>
         <p className="text-xl text-slate-300 text-center mb-8 leading-relaxed">India's smartest coin loyalty ecosystem. Earn, spend, and grow — with every transaction.</p>
         <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
           {[['🏪','Vendor ROI Dashboard'],['🎁','Smart Cashback'],['👥','Referral Rewards'],['🔒','Secure Wallet']].map(([icon,label])=>(
@@ -79,8 +79,8 @@ export default function AdminLoginPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8">
             {/* Logo Mobile */}
             <div className="lg:hidden text-center mb-6">
-              <div className="text-5xl mb-2">🪙</div>
-              <h1 className="text-3xl font-black bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">Japsan Coin</h1>
+              <img src="/JapSan.png" alt="Japsan Logo" className="w-16 h-16 mb-2 mx-auto rounded-2xl shadow-md" />
+              <h1 className="text-3xl font-black bg-gradient-to-r from-orange-300 via-orange-500 to-orange-700 bg-clip-text text-transparent">Japsan Pay</h1>
             </div>
 
 

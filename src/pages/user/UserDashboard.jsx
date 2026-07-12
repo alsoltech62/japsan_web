@@ -25,90 +25,121 @@ export default function UserDashboard() {
 
   const w = data?.wallet || {};
   return (
-    <div className="p-5 space-y-6 fade-in min-h-screen bg-slate-50/50 pb-24">
-      {/* Greeting */}
-      <div className="pt-2 flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-black bg-gradient-to-br from-slate-900 to-slate-600 bg-clip-text text-transparent">
-            Good day, {user?.name?.split(' ')[0]}! 👋
-          </h2>
-          <p className="text-slate-500 text-sm font-medium mt-1 tracking-wide">Let's grow your Japsan Coins</p>
-        </div>
-      </div>
-
-      {/* Coin Balance Card */}
-      <div className="relative group cursor-pointer" onClick={() => navigate('/user/wallet')}>
-        <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-[2rem] blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
-        <div className="relative">
-          <CoinBalance coins={w.coin_balance} locked={w.locked_coin_balance} rate={data?.redemption_rate || 0.7} />
-        </div>
-      </div>
-
-      {/* Expiring Alert */}
-      {data?.expiring_coins_30d > 0 && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-orange-200 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow transition-all">
-          <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xl shrink-0">
-            ⚠️
-          </div>
-          <div>
-            <p className="font-bold text-orange-800 text-sm">Coins expiring soon!</p>
-            <p className="text-orange-600/80 text-xs font-medium mt-0.5">{Number(data.expiring_coins_30d).toLocaleString('en-IN')} coins expire in the next 30 days</p>
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div>
-        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Quick Actions</h3>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { icon: <FiShoppingCart />, label:'Buy Coins', to:'/user/buy-coins', color:'text-orange-600', bg:'bg-orange-50 hover:bg-orange-500 hover:text-white border-orange-100' },
-            { icon: <FiMaximize />,     label:'Scan QR',   to:'/user/scan-pay',  color:'text-blue-600',   bg:'bg-blue-50 hover:bg-blue-500 hover:text-white border-blue-100' },
-            { icon: <FiMapPin />,       label:'Nearby',    to:'/user/nearby',    color:'text-emerald-600',bg:'bg-emerald-50 hover:bg-emerald-500 hover:text-white border-emerald-100' },
-            { icon: <FiUsers />,        label:'Refer',     to:'/user/referral',  color:'text-purple-600', bg:'bg-purple-50 hover:bg-purple-500 hover:text-white border-purple-100' },
-            { icon: <FiGlobe />,        label:'Network',   to:'/user/network',   color:'text-pink-600',   bg:'bg-pink-50 hover:bg-pink-500 hover:text-white border-pink-100' },
-            { icon: <FiClock />,        label:'History',   to:'/user/wallet',    color:'text-slate-600',  bg:'bg-slate-100 hover:bg-slate-600 hover:text-white border-slate-200' },
-          ].map(({icon,label,to,color,bg}) => (
-            <button key={label} onClick={() => navigate(to)}
-              className={`rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 font-semibold text-xs transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 border ${bg} ${color}`}>
-              <div className="text-2xl">{icon}</div>
-              <span className="tracking-wide">{label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Stats Overview */}
-      <div>
-        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Overview</h3>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { label:'Earned',   value: Number(w.total_coins_earned||0).toLocaleString(), icon:'📈', color:'text-emerald-600', bg:'bg-emerald-50' },
-            { label:'Redeemed', value: Number(w.total_coins_redeemed||0).toLocaleString(), icon:'💸', color:'text-blue-600', bg:'bg-blue-50' },
-            { label:'Expired',  value: Number(w.total_coins_expired||0).toLocaleString(), icon:'⏳', color:'text-rose-500', bg:'bg-rose-50' },
-            { label:'Cash (₹)', value: Number(w.cash_wallet_balance||0).toFixed(2), icon:'💰', color:'text-purple-600', bg:'bg-purple-50' },
-          ].map(({label,value,icon,color,bg}) => (
-            <div key={label} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex flex-col justify-between relative overflow-hidden group">
-              <div className="flex items-center gap-2 mb-2 relative z-10">
-                <div className={`w-8 h-8 ${bg} ${color} rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform`}>{icon}</div>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</span>
+    <div className="min-h-screen bg-slate-50 pb-24 fade-in font-sans">
+      <div className="px-4 pt-4 pb-6 space-y-6">
+        
+        {/* Total Wallet Balance Card */}
+        <div className="relative group cursor-pointer overflow-hidden rounded-[24px] bg-gradient-to-br from-slate-900 to-slate-800 shadow-lg text-white" onClick={() => navigate('/user/wallet')}>
+          <div className="absolute -right-4 -top-10 w-40 h-40 bg-orange-500 rounded-full blur-3xl opacity-20"></div>
+          <div className="p-5 relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-slate-300 font-medium text-sm">Total Wallet Balance</span>
+                <span className="text-slate-400">👁️</span>
               </div>
-              <p className={`text-xl font-black ${color} pl-1 relative z-10`}>{value}</p>
-              <div className={`absolute -bottom-4 -right-4 w-16 h-16 rounded-full ${bg} opacity-50 group-hover:scale-150 transition-transform duration-500`}></div>
+              <img src="/JapSan.png" alt="Coins" className="w-12 h-12 absolute right-0 top-6 opacity-90 object-contain drop-shadow-md" />
+            </div>
+            
+            <h2 className="text-3xl font-black mb-1">{Number(w.coin_balance || 0).toLocaleString()} <span className="text-orange-400 text-2xl">JC</span></h2>
+            <p className="text-slate-400 text-xs font-medium mb-6">≈ ₹{Number(w.cash_wallet_balance || 0).toFixed(2)}</p>
+            
+            <button className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white transition-colors">
+              Wallet Details &gt;
+            </button>
+          </div>
+        </div>
+
+        {/* Promo Banner */}
+        <div className="mt-6 mb-2 rounded-[24px] overflow-hidden shadow-lg border border-slate-200">
+          <img src="https://img.freepik.com/free-vector/gradient-crypto-sale-banner_23-2149306019.jpg?w=1000" alt="Promo" className="w-full h-32 md:h-48 object-cover" />
+        </div>
+
+        {/* Primary Actions Row */}
+        <div className="flex justify-between items-start px-2">
+          {[
+            { icon: <FiShoppingCart size={20}/>, label: 'Buy Coins', to: '/user/buy-coins', color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
+            { icon: <FiUsers size={20}/>, label: 'Send JC', to: '/user/scan-pay', color: 'text-rose-500', bg: 'bg-rose-50 border-rose-100' },
+            { icon: <FiMaximize size={20}/>, label: 'Scan & Pay', to: '/user/scan-pay', color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-100' },
+            { icon: <FiGlobe size={20}/>, label: 'Request', to: '/user/wallet', color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100' },
+          ].map((item, idx) => (
+            <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => navigate(item.to)}>
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm ${item.bg} ${item.color}`}>
+                {item.icon}
+              </div>
+              <span className="text-[10px] font-semibold text-slate-600">{item.label}</span>
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Recent Transactions */}
-      <div className="pt-2">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-slate-800 uppercase tracking-wider text-sm">Recent Activity</h3>
-          <button onClick={() => navigate('/user/wallet')} className="text-orange-500 text-sm font-bold hover:text-orange-600">View All →</button>
+        {/* Promo Banner */}
+        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-[20px] p-4 flex items-center justify-between border border-orange-200">
+          <div className="flex-1 pr-2">
+            <h3 className="font-bold text-slate-800 text-sm mb-1">Invite & Earn More</h3>
+            <p className="text-[10px] text-slate-600 mb-3 leading-tight">Refer your friends and earn Unlimited JC Rewards</p>
+            <button onClick={() => navigate('/user/referral')} className="bg-slate-900 text-white text-[10px] font-bold px-4 py-1.5 rounded-lg hover:bg-slate-800 transition-colors">
+              Invite Now
+            </button>
+          </div>
+          <div className="text-4xl">🎁</div>
         </div>
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100">
-          <TransactionList transactions={data?.transactions?.slice(0,5) || []} />
+
+        {/* Quick Access Grid */}
+        <div>
+          <h3 className="text-sm font-bold text-slate-800 mb-3">Quick Access</h3>
+          <div className="grid grid-cols-4 gap-y-4">
+            {[
+              { icon: '👥', label: 'My Network', to: '/user/network' },
+              { icon: '📄', label: 'Transactions', to: '/user/wallet' },
+              { icon: '🎁', label: 'Rewards', to: '/user/referral' },
+              { icon: '🏷️', label: 'Offers', to: '/user/nearby' },
+              { icon: '🏆', label: 'Holdings', to: '/user/wallet' },
+              { icon: '🏅', label: 'Rank', to: '/user/network' },
+              { icon: '🛡️', label: 'KYC', to: '/user/profile' },
+              { icon: '❓', label: 'Help Center', to: '/user/profile' }
+            ].map((item, idx) => (
+              <div key={idx} onClick={() => navigate(item.to)} className="flex flex-col items-center gap-1 cursor-pointer hover:scale-105 transition-transform">
+                <div className="text-xl mb-1 text-slate-700">{item.icon}</div>
+                <span className="text-[10px] font-medium text-slate-600">{item.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* My Performance */}
+        <div>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-sm font-bold text-slate-800">My Performance</h3>
+            <span className="text-xs text-slate-500 cursor-pointer">This Month ⌵</span>
+          </div>
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-emerald-500">👥</span>
+                <span className="text-xs font-semibold text-slate-700">Team Business</span>
+              </div>
+              <span className="text-xs font-bold text-slate-800">₹{Number(w.total_revenue_generated||0).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-orange-500">🔗</span>
+                <span className="text-xs font-semibold text-slate-700">Total Referrals</span>
+              </div>
+              <span className="text-xs font-bold text-orange-500">{Number(w.total_coins_earned||0).toLocaleString()} JC</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Transactions */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-slate-800 text-sm">Recent Transactions</h3>
+            <button onClick={() => navigate('/user/wallet')} className="text-slate-900 text-xs font-bold">View All</button>
+          </div>
+          <div className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100">
+            <TransactionList transactions={data?.transactions?.slice(0,4) || []} />
+          </div>
+        </div>
+
       </div>
     </div>
   );

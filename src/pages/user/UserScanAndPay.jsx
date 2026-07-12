@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { scanVendorQR, userPayVendor, userTransfer, getWallet } from '../../services/api';
@@ -24,6 +24,13 @@ export default function UserScanAndPay() {
   const [loading, setLoading] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && (!user.name || !user.city)) {
+      toast.error('Please complete your profile (Name, City) to make payments');
+      navigate('/user/profile');
+    }
+  }, [user, navigate]);
 
   const handleScan = async (scannedText) => {
     const query = scannedText || vendorId;
@@ -106,7 +113,11 @@ export default function UserScanAndPay() {
         toast.error(res.data.message || 'Payment failed');
       }
     } catch (err) {
-      toast.error('Payment processing failed');
+      const msg = err.response?.data?.message || 'Payment processing failed';
+      toast.error(msg);
+      if (err.response?.data?.data?.profile_incomplete) {
+        navigate('/user/profile');
+      }
     } finally {
       setLoading(false);
     }
@@ -130,7 +141,11 @@ export default function UserScanAndPay() {
         toast.error(res.data.message || 'Transfer failed');
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Transfer processing failed');
+      const msg = err.response?.data?.message || 'Transfer processing failed';
+      toast.error(msg);
+      if (err.response?.data?.data?.profile_incomplete) {
+        navigate('/user/profile');
+      }
     } finally {
       setLoading(false);
     }
@@ -171,6 +186,12 @@ export default function UserScanAndPay() {
           <div className="mt-2">
             <p className="font-bold text-slate-800 text-lg">{user?.name}</p>
             <p className="text-slate-500 text-sm">{user?.phone}</p>
+            <div className="bg-orange-50 border border-orange-100 rounded-xl py-1 px-3 mt-2 inline-flex items-center gap-2">
+              <span className="text-orange-700 font-bold text-sm">{user?.phone}@japsan</span>
+              <button onClick={() => {navigator.clipboard.writeText(`${user?.phone}@japsan`); toast.success('UPI ID Copied!');}} className="text-orange-500 hover:text-orange-700" title="Copy UPI ID">
+                <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -234,13 +255,21 @@ export default function UserScanAndPay() {
       {/* VENDOR PAYMENT UI */}
       {vendorDetails && (
         <div className="space-y-4">
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl">
-              🏪
-            </div>
-            <div>
-              <p className="font-bold text-slate-800">{vendorDetails.business_name || vendorDetails.owner_name}</p>
-              <p className="text-xs text-slate-500">{vendorDetails.city || 'Local Shop'}</p>
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-3 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-12 bg-blue-50"></div>
+            {vendorDetails.profile_photo ? (
+              <img src={vendorDetails.profile_photo} alt="Logo" className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-sm z-10" />
+            ) : (
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl border-4 border-white shadow-sm z-10">
+                🏪
+              </div>
+            )}
+            <div className="z-10">
+              <p className="font-bold text-slate-800 text-lg">{vendorDetails.business_name || vendorDetails.owner_name}</p>
+              <p className="text-xs text-slate-500 font-medium">{vendorDetails.city || 'Local Shop'}</p>
+              {vendorDetails.address && (
+                <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">{vendorDetails.address}</p>
+              )}
             </div>
           </div>
 
@@ -286,15 +315,20 @@ export default function UserScanAndPay() {
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase">Enter 4-Digit PIN</label>
+            <div className="relative">
+              <label className="text-xs font-semibold text-slate-500 uppercase text-center block w-full mb-2">Enter 4-Digit PIN</label>
+              <div className="flex gap-4 justify-center mt-2">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all ${pin.length > i ? 'bg-slate-800 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                    {pin.length > i && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                  </div>
+                ))}
+              </div>
               <input
-                type="password"
-                maxLength="4"
-                className="input-field w-full text-lg mt-1 tracking-widest text-center"
-                placeholder="****"
+                type="number"
+                className="absolute inset-0 top-6 opacity-0 cursor-text w-full h-[calc(100%-24px)]"
                 value={pin}
-                onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
               />
             </div>
 
@@ -339,15 +373,20 @@ export default function UserScanAndPay() {
               />
             </div>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase">Enter 4-Digit PIN</label>
+            <div className="relative">
+              <label className="text-xs font-semibold text-slate-500 uppercase text-center block w-full mb-2">Enter 4-Digit PIN</label>
+              <div className="flex gap-4 justify-center mt-2">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all ${pin.length > i ? 'bg-slate-800 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                    {pin.length > i && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                  </div>
+                ))}
+              </div>
               <input
-                type="password"
-                maxLength="4"
-                className="input-field w-full text-lg mt-1 tracking-widest text-center"
-                placeholder="****"
+                type="number"
+                className="absolute inset-0 top-6 opacity-0 cursor-text w-full h-[calc(100%-24px)]"
                 value={pin}
-                onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
               />
             </div>
 

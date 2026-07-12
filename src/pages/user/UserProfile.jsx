@@ -75,7 +75,7 @@ export default function UserProfile() {
               <input className="input-field mt-1" type="email" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} /></div>
             <div><label className="text-sm font-medium text-slate-700">City</label>
               <input className="input-field mt-1" value={form.city} onChange={e=>setForm(f=>({...f,city:e.target.value}))} /></div>
-            <div><label className="text-sm font-medium text-slate-700">Area</label>
+            <div><label className="text-sm font-medium text-slate-700">Address</label>
               <input className="input-field mt-1" value={form.area} onChange={e=>setForm(f=>({...f,area:e.target.value}))} /></div>
             <div><label className="text-sm font-medium text-slate-700">Date of Birth</label>
               <input className="input-field mt-1" type="date" value={form.dob} onChange={e=>setForm(f=>({...f,dob:e.target.value}))} /></div>
@@ -93,7 +93,14 @@ export default function UserProfile() {
           <>
             <h3 className="text-xl font-bold text-slate-800">{profile?.name}</h3>
             <p className="text-slate-500">{profile?.phone}</p>
-            {profile?.email && <p className="text-slate-400 text-sm">{profile?.email}</p>}
+            <div className="bg-orange-50 border border-orange-100 rounded-xl py-1 px-3 mt-2 inline-flex items-center gap-2 mx-auto">
+              <span className="text-orange-500 font-bold text-sm">QR</span>
+              <span className="text-orange-700 font-bold text-sm">{profile?.phone}@japsan</span>
+              <button onClick={() => {navigator.clipboard.writeText(`${profile?.phone}@japsan`); toast.success('UPI ID Copied!');}} className="text-orange-500 hover:text-orange-700" title="Copy UPI ID">
+                <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+            {profile?.email && <p className="text-slate-400 text-sm mt-2">{profile?.email}</p>}
             {(profile?.city || profile?.area) && <p className="text-slate-500 text-sm mt-1">📍 {profile?.area ? profile.area + ', ' : ''}{profile?.city}</p>}
             {profile?.dob && <p className="text-slate-500 text-sm">🎂 {profile?.dob}</p>}
             <span className={`badge mt-2 inline-flex ${profile?.kyc_status==='approved'?'badge-success':profile?.kyc_status==='pending'?'badge-warning':'badge-info'}`}>
@@ -126,6 +133,33 @@ export default function UserProfile() {
             <p className="font-bold text-slate-800">{value}</p>
           </div>
         ))}
+      </div>
+
+      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+        <div className="p-4 border-b border-slate-50">
+          <h3 className="font-bold text-slate-800">Support & Information</h3>
+        </div>
+        <div className="divide-y divide-slate-50">
+          {[
+            {icon: 'ℹ️', label: 'About Us', text: 'Japsan Pay Ecosystem connects users and vendors through a dynamic rewards and payment system.'},
+            {icon: '🎧', label: 'Support & Help', text: 'Contact us at support@japsanpay.com or call +91 98765 43210. Available 24/7.'},
+            {icon: '❓', label: 'FAQs / Q&A', text: 'Q: How to earn? A: Scan & pay, refer friends. Q: How to withdraw? A: Only vendors can withdraw to bank. Users can use coins to buy.'},
+            {icon: '🔒', label: 'Privacy Policy', text: 'Your data is secured and only used for KYC and transactions.'}
+          ].map((item, idx) => (
+            <details key={idx} className="group p-4 bg-white [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex items-center justify-between cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <span>{item.icon}</span>
+                  <span className="font-medium text-slate-700">{item.label}</span>
+                </div>
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9" /></svg>
+                </span>
+              </summary>
+              <p className="mt-3 text-sm text-slate-500 pl-8 leading-relaxed whitespace-pre-wrap">{item.text}</p>
+            </details>
+          ))}
+        </div>
       </div>
 
       <button onClick={()=>{logout();navigate('/login');}}

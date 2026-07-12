@@ -20,7 +20,7 @@ export default function UserReferral() {
     toast.success('Share link copied!');
   }
   function shareWhatsApp() {
-    const msg = encodeURIComponent(`Join Japsan Coin and earn rewards! Use my referral code: ${data?.referral_code}\n${data?.share_link}`);
+    const msg = encodeURIComponent(`Join Japsan Pay and earn rewards! Use my referral code: ${data?.referral_code}\n${data?.share_link}`);
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   }
 

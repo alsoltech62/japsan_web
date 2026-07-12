@@ -43,7 +43,7 @@ export default function VendorRewardSettings() {
       {/* Basic Cashback */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 space-y-3">
         <h3 className="font-bold text-slate-800">Automatic Cashback</h3>
-        <p className="text-xs text-slate-500">Set the default % of Japsan Coins awarded to customers on every purchase.</p>
+        <p className="text-xs text-slate-500">Set the default % of Japsan Pays awarded to customers on every purchase.</p>
         <div className="flex items-center gap-2">
           <input
             type="number"

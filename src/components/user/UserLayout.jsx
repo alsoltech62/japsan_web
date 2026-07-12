@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiHome, FiCreditCard, FiShoppingCart, FiUsers, FiBell, FiUser, FiLogOut, FiChevronLeft } from 'react-icons/fi';
+import { FiHome, FiMaximize, FiShoppingCart, FiUsers, FiBell, FiUser, FiLogOut, FiChevronLeft } from 'react-icons/fi';
 import NotificationBadge from '../common/NotificationBadge';
 
 const navItems = [
   { to:'/user/dashboard',     icon:<FiHome size={20}/>,        label:'Home' },
-  { to:'/user/wallet',        icon:<FiCreditCard size={20}/>,  label:'Wallet' },
+  { to:'/user/scan-and-pay',  icon:<FiMaximize size={20}/>,    label:'Scan & Pay' },
   { to:'/user/buy-coins',     icon:<FiShoppingCart size={20}/>,label:'Buy Coins' },
   { to:'/user/referral',      icon:<FiUsers size={20}/>,       label:'Refer & Earn' },
   { to:'/user/notifications', icon:<FiBell size={20}/>,        label:'Alerts' },
@@ -24,22 +24,22 @@ export default function UserLayout() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Top Header */}
-      <header className="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <header className="bg-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-3">
           {location.pathname !== '/user/dashboard' && (
-            <button onClick={goBack} className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-full transition-all">
+            <button onClick={goBack} className="p-2 -ml-2 text-slate-800 hover:bg-slate-100 rounded-full transition-all">
               <FiChevronLeft size={24} />
             </button>
           )}
-          <div className="w-8 h-8 coin-gradient rounded-full flex items-center justify-center text-sm">🪙</div>
+          <img src="/JapSan.png" alt="Logo" className="w-8 h-8 rounded-lg" />
           <div>
-            <p className="font-bold text-slate-800 text-sm leading-tight">Japsan Coin</p>
-            <p className="text-xs text-slate-400">Hi, {user?.name?.split(' ')[0]}!</p>
+            <p className="font-bold text-slate-900 text-sm leading-tight">Japsan Pay</p>
+            <p className="text-[10px] text-slate-500 font-medium">Hi, {user?.name?.split(' ')[0]}!</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <NotificationBadge userType="user" />
-          <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500 rounded-xl hover:bg-red-50 transition-all" title="Logout">
+          <button onClick={handleLogout} className="p-2 text-slate-600 hover:text-red-500 rounded-xl hover:bg-red-50 transition-all" title="Logout">
             <FiLogOut size={18}/>
           </button>
         </div>

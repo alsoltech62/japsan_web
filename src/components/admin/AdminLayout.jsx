@@ -23,7 +23,7 @@ export default function AdminLayout() {
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:flex lg:flex-col`}>
         <div className="p-6 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 coin-gradient rounded-xl flex items-center justify-center text-xl">🪙</div>
+            <img src="/JapSan.png" alt="Logo" className="w-10 h-10 rounded-xl" />
             <div>
               <p className="font-bold text-white">Japsan Admin</p>
               <p className="text-xs text-slate-400">{user?.name}</p>

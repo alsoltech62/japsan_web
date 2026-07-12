@@ -47,7 +47,13 @@ export default function VendorQRCode() {
         <div className="mt-4">
           <p className="font-bold text-slate-800 text-lg">{data?.vendor?.business_name || user?.name}</p>
           <p className="text-slate-500 text-sm">{data?.vendor?.phone}</p>
-          <p className="badge badge-orange mt-2">Japsan Coin Vendor</p>
+          <div className="bg-orange-50 border border-orange-100 rounded-xl py-1 px-3 mt-1 inline-flex items-center gap-2">
+            <p className="text-orange-700 font-bold text-sm">{data?.vendor?.phone || user?.phone}@japsan</p>
+            <button onClick={() => {navigator.clipboard.writeText(`${data?.vendor?.phone || user?.phone}@japsan`); toast.success('UPI ID Copied!');}} className="text-orange-500 hover:text-orange-700" title="Copy UPI ID">
+              <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+          <div className="mt-2"><p className="badge badge-orange">Japsan Pay Vendor</p></div>
         </div>
         <div className="mt-3 bg-orange-50 rounded-xl p-3">
           <p className="text-sm text-orange-700 font-medium">Cashback: {data?.vendor?.cashback_pct || 10}% coins on every purchase</p>

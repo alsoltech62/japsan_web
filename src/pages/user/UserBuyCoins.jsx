@@ -124,7 +124,17 @@ export default function UserBuyCoins() {
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-2">Payment Reference / Transaction ID</label>
         <input className="input-field" placeholder="Enter UPI/transaction reference" value={txRef} onChange={e=>setTxRef(e.target.value)} />
-        <p className="text-xs text-slate-400 mt-1">Pay ₹{amtInr || '---'} to UPI: japsan@upi and enter transaction ID above</p>
+        <div className="bg-green-50 border border-green-200 rounded-xl p-3 mt-3">
+          <p className="text-xs font-bold text-green-700 mb-1">Manual UPI Payment (If Razorpay fails)</p>
+          <p className="text-xs text-slate-600 mb-1">Please pay ₹{amtInr || '---'} to UPI ID:</p>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-800 tracking-wide">goldbindia@oksbi</span>
+            <button onClick={() => {navigator.clipboard.writeText('goldbindia@oksbi'); toast.success('UPI ID Copied!');}} className="text-green-600 hover:text-green-800" title="Copy UPI ID">
+              <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+          <p className="text-xs text-slate-500 mt-2">Then enter the transaction ID/Reference above to claim your coins.</p>
+        </div>
       </div>
 
       <button onClick={handleBuy} disabled={loading||!coins||!txRef} className="btn-primary w-full text-lg disabled:opacity-50 disabled:cursor-not-allowed">

@@ -71,6 +71,18 @@ export default function AdminVendors() {
                     <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{v.city}</td>
                     <td className="px-4 py-3">
                       <span className={`badge ${KYC_COLOR[v.kyc_status]||'badge-info'}`}>{v.kyc_status}</span>
+                      <div className="mt-1 flex flex-col gap-1">
+                        {v.kyc_document && (
+                          <a href={v.kyc_document} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline font-medium hover:text-blue-800 flex items-center gap-1">
+                            <span>📄</span> View Front
+                          </a>
+                        )}
+                        {v.kyc_document_back && (
+                          <a href={v.kyc_document_back} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline font-medium hover:text-blue-800 flex items-center gap-1">
+                            <span>📄</span> View Back
+                          </a>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 font-semibold text-green-600 whitespace-nowrap">₹{Number(v.total_revenue_generated||0).toFixed(0)}</td>
                     <td className="px-4 py-3 text-orange-600 font-semibold">{v.cashback_percent}%</td>

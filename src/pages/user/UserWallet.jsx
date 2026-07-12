@@ -23,23 +23,97 @@ export default function UserWallet() {
       <h2 className="text-xl font-bold text-slate-800">💳 My Wallet</h2>
       <CoinBalance coins={w.coin_balance} locked={w.locked_coin_balance} rate={data?.redemption_rate||0.7}/>
 
-      <div className="bg-white rounded-2xl p-4 border border-slate-100">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center">
-            <p className="text-2xl font-black text-orange-500">🪙 {Number(w.coin_balance||0).toLocaleString('en-IN')}</p>
-            <p className="text-xs text-slate-500 mt-1">Available Coins</p>
+      <div className="bg-slate-800 text-white rounded-2xl overflow-hidden shadow-lg border border-slate-700">
+        <div className="p-4 bg-slate-900 border-b border-slate-700 text-center font-bold text-lg">
+          My Wallets
+        </div>
+        
+        {/* Main Wallet */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">💳</div>
+            <div>
+              <p className="font-bold">Main Wallet (JC)</p>
+              <p className="text-xs text-green-400">Withdrawable (Purchased JC)</p>
+            </div>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-black text-purple-500">₹{Number(w.cash_wallet_balance||0).toFixed(2)}</p>
-            <p className="text-xs text-slate-500 mt-1">Cash Wallet</p>
+          <p className="font-bold text-blue-400">{data?.multi_wallet?.main_wallet || 0} JC</p>
+        </div>
+
+        {/* 90 Days Lock */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl">🔒</div>
+            <div>
+              <p className="font-bold">90 Days Lock Wallet</p>
+              <p className="text-xs text-red-400">Non-Withdrawable</p>
+            </div>
+          </div>
+          <p className="font-bold text-orange-400">{data?.multi_wallet?.lock_90d_wallet || 0} JC</p>
+        </div>
+
+        {/* Referral Wallet */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xl">👥</div>
+            <div>
+              <p className="font-bold">Referral Reward Wallet</p>
+              <p className="text-xs text-red-400">Non-Withdrawable</p>
+            </div>
+          </div>
+          <p className="font-bold text-green-400">{data?.multi_wallet?.referral_wallet || 0} JC</p>
+        </div>
+
+        {/* Cashback Wallet */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">🎁</div>
+            <div>
+              <p className="font-bold">Cashback Wallet</p>
+              <p className="text-xs text-red-400">Non-Withdrawable</p>
+            </div>
+          </div>
+          <p className="font-bold text-purple-400">{data?.multi_wallet?.cashback_wallet || 0} JC</p>
+        </div>
+
+        {/* Level Income */}
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xl">🔗</div>
+            <div>
+              <p className="font-bold">Level Income Wallet</p>
+              <p className="text-xs text-red-400">Non-Withdrawable</p>
+            </div>
+          </div>
+          <p className="font-bold text-red-400">{data?.multi_wallet?.level_income_wallet || 0} JC</p>
+        </div>
+
+        {/* Total Balance */}
+        <div className="p-4 bg-slate-900 flex justify-between items-center">
+          <p className="font-bold">Total Balance (All Wallets)</p>
+          <p className="font-bold text-lg">{data?.multi_wallet?.total_balance || 0} JC</p>
+        </div>
+      </div>
+      
+      {data?.vendor_locked_coins?.length > 0 && (
+        <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm mt-4">
+          <h3 className="font-bold text-slate-800 mb-3">Vendor Wise Locked Coins (90 Days)</h3>
+          <div className="space-y-3">
+            {data.vendor_locked_coins.map((vc, i) => (
+              <div key={i} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">🏪</div>
+                  <div>
+                    <p className="font-bold text-slate-800">{vc.business_name || 'Vendor'}</p>
+                    <p className="text-xs text-slate-500">Use only at this vendor</p>
+                  </div>
+                </div>
+                <p className="font-bold text-orange-600">{vc.locked_amount} JC</p>
+              </div>
+            ))}
           </div>
         </div>
-        {w.locked_coin_balance > 0 && (
-          <div className="mt-3 pt-3 border-t border-slate-100 text-center">
-            <p className="text-sm text-slate-500">🔒 <span className="font-semibold">{Number(w.locked_coin_balance).toLocaleString()}</span> coins locked (referral)</p>
-          </div>
-        )}
-      </div>
+      )}
 
       {data?.expiring_coins_30d > 0 && (
         <div className="bg-red-50 rounded-2xl p-4 flex gap-3 items-center border border-red-100">

@@ -80,6 +80,18 @@ export default function AdminUsers() {
                     <td className="px-4 py-3 text-slate-600">{u.tx_count||0}</td>
                     <td className="px-4 py-3">
                       <span className={`badge ${KYC_COLOR[u.kyc_status]||'badge-info'}`}>{u.kyc_status||'pending'}</span>
+                      <div className="mt-1 flex flex-col gap-1">
+                        {u.kyc_document && (
+                          <a href={u.kyc_document} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline font-medium hover:text-blue-800 flex items-center gap-1">
+                            <span>📄</span> View Front
+                          </a>
+                        )}
+                        {u.kyc_document_back && (
+                          <a href={u.kyc_document_back} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline font-medium hover:text-blue-800 flex items-center gap-1">
+                            <span>📄</span> View Back
+                          </a>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`badge ${u.is_frozen?'badge-danger':u.is_active?'badge-success':'badge-warning'}`}>
