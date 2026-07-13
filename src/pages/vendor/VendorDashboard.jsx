@@ -60,7 +60,7 @@ export default function VendorDashboard() {
           <div className="grid grid-cols-4 gap-y-6">
             {[
               { icon: '👤', label:'Profile', to:'/vendor/profile' },
-              { icon: '💳', label:'Process', to:'/vendor/payment' },
+              { icon: '💳', label:'Bill Customer', to:'/vendor/payment' },
               { icon: '📱', label:'Show QR', to:'/vendor/qr' },
               { icon: '🏦', label:'Withdraw',to:'/vendor/withdraw' },
               { icon: '⚙️', label:'Rewards', to:'/vendor/reward-settings' },
@@ -96,6 +96,13 @@ export default function VendorDashboard() {
                 <span className="text-xs font-semibold text-slate-700">Total Customers</span>
               </div>
               <span className="text-xs font-bold text-orange-500">{w.total_customers||0}</span>
+            </div>
+            <div className="flex justify-between items-center mt-2">
+              <div className="flex items-center gap-2">
+                <span className="text-yellow-500">🪙</span>
+                <span className="text-xs font-semibold text-slate-700">Reward Given</span>
+              </div>
+              <span className="text-xs font-bold text-yellow-600">{Number(w.total_coins_distributed||0).toLocaleString()} JC</span>
             </div>
           </div>
         </div>

@@ -63,7 +63,16 @@ export default function VendorPayment() {
         <button onClick={() => window.history.back()} className="text-slate-500 hover:bg-slate-100 p-2 rounded-full">
           <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h2 className="text-xl font-bold text-slate-800">💳 Process Payment</h2>
+        <h2 className="text-xl font-bold text-slate-800">💳 Bill Customer / Accept Payment</h2>
+      </div>
+      <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-4 text-sm text-blue-800">
+        <p className="font-bold mb-1">How to bill your customer:</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Enter the customer's Japsan registered phone number.</li>
+          <li>Enter the total bill amount they need to pay.</li>
+          <li>The app will automatically calculate discounts if they use their Japsan Coins.</li>
+          <li>After payment, they will receive cashback based on your Reward Settings!</li>
+        </ul>
       </div>
 
       <div>

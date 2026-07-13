@@ -12,7 +12,8 @@ export default function VendorProfile() {
   const [uploading, setUploading] = useState(false);
   const { logout, updateUser }= useAuth();
   const navigate              = useNavigate();
-  const fileInputRef = useRef(null);
+  const cardInputRef = useRef(null);
+  const profileInputRef = useRef(null);
 
   useEffect(() => {
     getVendorProfile().then(r => {
@@ -42,7 +43,7 @@ export default function VendorProfile() {
     } catch (err) { toast.error(err.response?.data?.message || 'Update failed'); }
   }
 
-  const handleFileUpload = async (e) => {
+  const handleFileUpload = async (e, fieldName) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
@@ -51,7 +52,7 @@ export default function VendorProfile() {
     try {
       const res = await uploadFile(fd);
       if (res.data.success) {
-        setForm(f => ({ ...f, visiting_card_photo: res.data.data.url }));
+        setForm(f => ({ ...f, [fieldName]: res.data.data.url }));
         toast.success('Photo uploaded!');
       } else {
         toast.error(res.data.message || 'Upload failed');
@@ -79,6 +80,23 @@ export default function VendorProfile() {
         
         {editing ? (
           <div className="space-y-3 text-left">
+            <div className="flex flex-col items-center mb-4">
+              <label className="text-sm font-medium text-slate-700 mb-2">Store Logo / Profile Photo</label>
+              <div className="relative cursor-pointer" onClick={() => profileInputRef.current?.click()}>
+                <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-200">
+                  {form.profile_photo || profile?.profile_photo ? (
+                    <img src={form.profile_photo || profile?.profile_photo} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-4xl">🏪</span>
+                  )}
+                </div>
+                <div className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-1.5 shadow-sm">
+                  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+              </div>
+              <input type="file" accept="image/*" className="hidden" ref={profileInputRef} onChange={e => handleFileUpload(e, 'profile_photo')} />
+            </div>
+
             <div><label className="text-sm font-medium text-slate-700">Business Name</label>
               <input className="input-field mt-1" value={form.business_name} onChange={e=>setForm(f=>({...f,business_name:e.target.value}))} /></div>
             <div><label className="text-sm font-medium text-slate-700">Owner Name</label>
@@ -99,10 +117,10 @@ export default function VendorProfile() {
                 {form.visiting_card_photo && (
                   <img src={form.visiting_card_photo} alt="Visiting Card" className="w-16 h-12 object-cover rounded shadow-sm border border-slate-200" />
                 )}
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="btn-secondary text-sm" disabled={uploading}>
+                <button type="button" onClick={() => cardInputRef.current?.click()} className="btn-secondary text-sm" disabled={uploading}>
                   {uploading ? 'Uploading...' : 'Upload Card'}
                 </button>
-                <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileUpload} />
+                <input type="file" accept="image/*" className="hidden" ref={cardInputRef} onChange={e => handleFileUpload(e, 'visiting_card_photo')} />
               </div>
             </div>
 
