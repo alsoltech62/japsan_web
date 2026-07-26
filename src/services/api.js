@@ -7,7 +7,7 @@ import axios from 'axios';
 //   'https://japsoncoin.foodpulse.in/backend/api';
 const BASE_URL =
   import.meta.env.VITE_API_URL ||
-  'http://japsanpay.com/backend/api';
+  'https://japsanpay.com/backend/api';
 const api = axios.create({
   baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
