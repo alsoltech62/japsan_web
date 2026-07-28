@@ -53,6 +53,7 @@ export const getNetwork = () => api.get('/users/network.php');
 export const getWallet = () => api.get('/wallet/get_wallet.php');
 
 // ── TRANSACTIONS ──────────────────────────────────────────────
+export const createRazorpayOrder = (data) => api.post('/transactions/create_order.php', data);
 export const processPayment = (data) => api.post('/transactions/process_payment.php', data);
 export const buyCoins = (data) => api.post('/transactions/buy_coins.php', data);
 export const getTransactions = (params) => api.get('/transactions/history.php', { params });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { buyCoins, getWallet } from '../../services/api';
+import { buyCoins, getWallet, createRazorpayOrder } from '../../services/api';
 
 const PACKAGES = [
   { coins:100,   bonus:0,    label:'Starter',  popular:false },
@@ -13,8 +13,6 @@ const PACKAGES = [
 export default function UserBuyCoins() {
   const [selected, setSelected] = useState(null);
   const [custom, setCustom]     = useState('');
-  const [method, setMethod]     = useState('upi');
-  const [txRef, setTxRef]       = useState('');
   const [loading, setLoading]   = useState(false);
   const [wallet, setWallet]     = useState(null);
   const [success, setSuccess]   = useState(null);
@@ -30,14 +28,42 @@ export default function UserBuyCoins() {
 
   async function handleBuy() {
     if (!coins || coins < 10) return toast.error('Enter at least 10 coins');
-    if (!txRef.trim()) return toast.error('Enter payment reference / transaction ID');
     setLoading(true);
     try {
-      const res = await buyCoins({ coins_requested: coins, payment_gateway_ref: txRef, payment_method: method });
-      setSuccess(res.data.data);
-      toast.success(res.data.message);
+      const orderRes = await createRazorpayOrder({ amount_inr: amtInr });
+      const { order_id, amount } = orderRes.data.data;
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY,
+        amount: amount,
+        currency: "INR",
+        name: "Japsan Pay",
+        description: `Purchase of ${coins} coins`,
+        order_id: order_id,
+        handler: async function (response) {
+          try {
+            const res = await buyCoins({
+              coins_requested: coins,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            setSuccess(res.data.data);
+            toast.success(res.data.message);
+          } catch (err) {
+            toast.error(err.response?.data?.message || 'Verification failed');
+          }
+        },
+        theme: { color: "#f97316" } // orange-500
+      };
+      
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        toast.error(response.error.description || 'Payment failed');
+      });
+      rzp.open();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Purchase failed');
+      toast.error(err.response?.data?.message || 'Could not initiate payment');
     }
     setLoading(false);
   }
@@ -108,36 +134,7 @@ export default function UserBuyCoins() {
         </div>
       )}
 
-      {/* Payment */}
-      <div>
-        <p className="text-sm font-semibold text-slate-600 mb-2">Payment Method</p>
-        <div className="flex gap-2">
-          {[['upi','UPI'],['card','Card']].map(([val,label]) => (
-            <button key={val} onClick={()=>setMethod(val)}
-              className={`flex-1 py-2 rounded-xl text-sm font-medium border-2 transition-all ${method===val?'border-orange-500 bg-orange-50 text-orange-600':'border-slate-200 text-slate-600'}`}>
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">Payment Reference / Transaction ID</label>
-        <input className="input-field" placeholder="Enter UPI/transaction reference" value={txRef} onChange={e=>setTxRef(e.target.value)} />
-        <div className="bg-green-50 border border-green-200 rounded-xl p-3 mt-3">
-          <p className="text-xs font-bold text-green-700 mb-1">Manual UPI Payment (If Razorpay fails)</p>
-          <p className="text-xs text-slate-600 mb-1">Please pay ₹{amtInr || '---'} to UPI ID:</p>
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-800 tracking-wide">goldbindia@oksbi</span>
-            <button onClick={() => {navigator.clipboard.writeText('goldbindia@oksbi'); toast.success('UPI ID Copied!');}} className="text-green-600 hover:text-green-800" title="Copy UPI ID">
-              <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-          </div>
-          <p className="text-xs text-slate-500 mt-2">Then enter the transaction ID/Reference above to claim your coins.</p>
-        </div>
-      </div>
-
-      <button onClick={handleBuy} disabled={loading||!coins||!txRef} className="btn-primary w-full text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+      <button onClick={handleBuy} disabled={loading||!coins} className="btn-primary w-full text-lg mt-6 disabled:opacity-50 disabled:cursor-not-allowed">
         {loading ? '⏳ Processing...' : `💰 Buy ${total>0?total.toLocaleString()+' Coins':'Coins'}`}
       </button>
     </div>
