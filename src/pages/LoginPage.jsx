@@ -19,6 +19,7 @@ export default function LoginPage() {
   const navigate              = useNavigate();
 
   const [refLocked, setRefLocked] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
 
   useEffect(() => {
     if (timer > 0) { const t = setTimeout(() => setTimer(t => t-1), 1000); return () => clearTimeout(t); }
@@ -68,7 +69,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* App Download Popup */}
+      {showPopup && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-4 animate-bounce w-11/12 max-w-md border border-orange-200">
+          <img src="/JapSan.png" alt="App Icon" className="w-12 h-12 rounded-xl" />
+          <div className="flex-1">
+            <h3 className="font-bold text-slate-800 text-sm">Download Japsan Pay App</h3>
+            <p className="text-xs text-slate-500">Get the best experience on mobile!</p>
+          </div>
+          <a href="https://play.google.com/store/apps/details?id=com.japsanpay.app&hl=en_IN" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg hover:shadow-orange-500/50 transition-all">
+            Install
+          </a>
+          <button onClick={() => setShowPopup(false)} className="absolute -top-2 -right-2 bg-slate-200 text-slate-600 rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-slate-300">
+            ✕
+          </button>
+        </div>
+      )}
+      
+      <div className="flex-1 flex w-full">
       {/* Left Brand Panel */}
       <div className="hidden lg:flex flex-col justify-center items-center w-1/2 p-12 text-white">
         <img src="/JapSan.png" alt="Japsan Logo" className="w-48 h-48 mb-6 animate-float rounded-3xl shadow-lg" />
@@ -177,6 +196,15 @@ export default function LoginPage() {
             )}
           </div>
         </div>
+        </div>
+      </div>
+      
+      {/* Footer with Play Store Link */}
+      <div className="w-full py-6 flex flex-col justify-center items-center bg-slate-900/50 backdrop-blur-sm border-t border-white/5">
+        <p className="text-slate-400 text-sm mb-3">Download the Japsan Pay App</p>
+        <a href="https://play.google.com/store/apps/details?id=com.japsanpay.app&hl=en_IN" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-105">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-12" />
+        </a>
       </div>
     </div>
   );
