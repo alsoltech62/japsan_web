@@ -34,9 +34,43 @@ export default function AdminVendors() {
 
   const KYC_COLOR = { pending:'badge-warning', submitted:'badge-info', approved:'badge-success', rejected:'badge-danger' };
 
+  async function downloadExcel() {
+    try {
+      const toastId = toast.loading('Generating Excel...');
+      const r = await getAdminVendors({ search, kyc_status: kyc, page: 1, limit: 99999 });
+      const allVendors = r.data.data?.vendors || [];
+      toast.dismiss(toastId);
+      if (!allVendors.length) return toast.error('No vendors found to download');
+
+      const headers = ['ID', 'Business Name', 'Owner Name', 'Phone', 'Email', 'Business Type', 'City', 'Address', 'Bank Account', 'Bank IFSC', 'KYC Status', 'Revenue', 'Status', 'Registered At'];
+      const rows = allVendors.map(v => [
+        v.id, `"${v.business_name||''}"`, `"${v.owner_name||''}"`, `"${v.phone||''}"`, `"${v.email||''}"`, `"${v.business_type||''}"`,
+        `"${v.city||''}"`, `"${v.business_address||''}"`, `"${v.bank_account_number||''}"`, `"${v.bank_ifsc||''}"`,
+        v.kyc_status, v.total_revenue_generated||0, v.is_frozen ? 'Frozen' : v.is_active ? 'Active' : 'Inactive', v.created_at
+      ]);
+      
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `Vendors_Export_${new Date().getTime()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      toast.dismiss();
+      toast.error('Failed to download Excel');
+    }
+  }
+
   return (
     <div className="space-y-4 fade-in">
-      <h1 className="text-2xl font-bold text-slate-800">🏪 Vendor Management</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-slate-800">🏪 Vendor Management</h1>
+        <button onClick={downloadExcel} className="btn-primary flex items-center gap-2">
+          <span>📥</span> Export to Excel
+        </button>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <input className="input-field flex-1" placeholder="Search business, phone, owner..." value={search} onChange={e=>{setSearch(e.target.value);setPage(1);}} />
@@ -100,6 +134,10 @@ export default function AdminVendors() {
                         </button>
                         <button onClick={() => setModal({type:'cashback', vendorId:v.id, name:v.business_name, current:v.cashback_percent})}
                           className="text-xs px-2 py-1 rounded-lg bg-orange-100 text-orange-700 font-medium">Cashback %</button>
+                        <button onClick={() => setModal({ type:'adjust', vendorId:v.id, name:v.business_name })}
+                          className="text-xs px-2 py-1 rounded-lg bg-purple-100 text-purple-700 font-medium">Adjust</button>
+                        <button onClick={() => setModal({ type:'profile', vendor:v })}
+                          className="text-xs px-2 py-1 rounded-lg bg-blue-100 text-blue-700 font-medium">Profile</button>
                       </div>
                     </td>
                   </tr>
@@ -150,6 +188,44 @@ export default function AdminVendors() {
                   <button onClick={() => doAction('update_cashback', modal.vendorId, {cashback_percent:form.pct})} className="btn-primary flex-1">Update</button>
                   <button onClick={() => {setModal(null);setForm({});}} className="btn-secondary flex-1">Cancel</button>
                 </div>
+              </>
+            )}
+            {modal.type === 'adjust' && (
+              <>
+                <h3 className="font-bold text-lg mb-4">Adjust Wallet — {modal.name}</h3>
+                <input type="number" className="input-field mb-3" placeholder="Coins (positive to add, negative to deduct)" value={form.coins||''} onChange={e=>setForm(f=>({...f,coins:e.target.value}))} />
+                <textarea className="input-field mb-4 h-20 resize-none" placeholder="Reason for adjustment..." value={form.reason||''} onChange={e=>setForm(f=>({...f,reason:e.target.value}))} />
+                <div className="flex gap-3">
+                  <button onClick={() => doAction('adjust_wallet', modal.vendorId, {coins:parseFloat(form.coins),reason:form.reason})}
+                    className="btn-primary flex-1">Adjust</button>
+                  <button onClick={() => { setModal(null); setForm({}); }} className="btn-secondary flex-1">Cancel</button>
+                </div>
+              </>
+            )}
+            {modal.type === 'profile' && (
+              <>
+                <h3 className="font-bold text-xl mb-4">Vendor Profile — {modal.vendor.business_name}</h3>
+                <div className="space-y-3 mb-6 text-sm max-h-[60vh] overflow-y-auto pr-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <span className="text-slate-500">Owner Name:</span><span className="font-medium text-right">{modal.vendor.owner_name || 'N/A'}</span>
+                    <span className="text-slate-500">Phone:</span><span className="font-medium text-right">{modal.vendor.phone}</span>
+                    <span className="text-slate-500">Email:</span><span className="font-medium text-right">{modal.vendor.email || 'N/A'}</span>
+                    <span className="text-slate-500">Business Type:</span><span className="font-medium text-right">{modal.vendor.business_type || 'N/A'}</span>
+                    <span className="text-slate-500">City:</span><span className="font-medium text-right">{modal.vendor.city || 'N/A'}</span>
+                    <span className="text-slate-500">Address:</span><span className="font-medium text-right">{modal.vendor.business_address || 'N/A'}</span>
+                    
+                    <div className="col-span-2 mt-2 mb-1 border-t border-slate-100 pt-2"><span className="font-bold text-slate-700">Bank Details</span></div>
+                    <span className="text-slate-500">Bank Name:</span><span className="font-medium text-right">{modal.vendor.bank_name || 'N/A'}</span>
+                    <span className="text-slate-500">Account No:</span><span className="font-medium text-right">{modal.vendor.bank_account_number || 'N/A'}</span>
+                    <span className="text-slate-500">IFSC:</span><span className="font-medium text-right">{modal.vendor.bank_ifsc || 'N/A'}</span>
+
+                    <div className="col-span-2 mt-2 mb-1 border-t border-slate-100 pt-2"><span className="font-bold text-slate-700">Financials</span></div>
+                    <span className="text-slate-500">Cash Wallet:</span><span className="font-bold text-green-600 text-right">₹{modal.vendor.cash_wallet_balance || 0}</span>
+                    <span className="text-slate-500">Coin Balance:</span><span className="font-bold text-orange-500 text-right">{modal.vendor.coin_balance || 0} 🪙</span>
+                    <span className="text-slate-500">Total Revenue:</span><span className="font-medium text-right">₹{modal.vendor.total_revenue_generated || 0}</span>
+                  </div>
+                </div>
+                <button onClick={() => setModal(null)} className="btn-secondary w-full">Close</button>
               </>
             )}
           </div>
