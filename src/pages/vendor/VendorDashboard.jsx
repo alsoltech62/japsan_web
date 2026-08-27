@@ -135,7 +135,7 @@ export default function VendorDashboard() {
                   <p className="text-[10px] text-slate-400">Bill: ₹{Number(tx.bill_amount||0).toFixed(0)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-green-600">+{Number(tx.coins_amount||0).toLocaleString()} JC</p>
+                  <p className="text-sm font-bold text-red-500">-{Number(tx.coins_amount||0).toLocaleString()} JC</p>
                 </div>
               </div>
             ))}

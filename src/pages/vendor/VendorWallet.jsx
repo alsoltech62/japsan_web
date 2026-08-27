@@ -98,7 +98,10 @@ export default function VendorWallet() {
         </div>
       )}
 
-      <button onClick={() => navigate('/vendor/withdraw')} className="btn-primary w-full">🏦 Withdraw to Bank</button>
+      <div className="flex gap-2 mt-4">
+        <button onClick={() => navigate('/vendor/withdraw')} className="btn-primary flex-1">🏦 Withdraw to Bank</button>
+        <button onClick={() => navigate('/vendor/buy-coins')} className="btn-secondary flex-1 bg-orange-100 text-orange-700 hover:bg-orange-200">🛒 Buy Coins</button>
+      </div>
 
       <div>
         <h3 className="font-bold text-slate-800 mb-3">Transaction History</h3>

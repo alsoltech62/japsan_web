@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { processPayment } from '../../services/api';
+import { processPayment, createRazorpayOrder } from '../../services/api';
 
 export default function VendorPayment() {
   const [phone, setPhone]         = useState('');
@@ -27,11 +27,50 @@ export default function VendorPayment() {
         payment_method: method,
         manual_bonus_coins: manualBonus ? parseFloat(manualBonus) : 0
       };
-      const res = await processPayment(payload);
-      setResult(res.data.data);
-      toast.success('Payment processed!');
-    } catch (err) { toast.error(err.response?.data?.message || 'Payment failed'); }
-    setLoading(false);
+
+      if (parseFloat(cashToPay) > 0) {
+        const orderRes = await createRazorpayOrder({ amount_inr: cashToPay });
+        const { order_id, amount } = orderRes.data.data;
+        
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY,
+          amount: amount,
+          currency: 'INR',
+          name: 'Japsan Pay',
+          description: 'Payment to Vendor',
+          order_id: order_id,
+          handler: async function (response) {
+            try {
+              const res = await processPayment({
+                ...payload,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              });
+              setResult(res.data.data);
+              toast.success('Payment processed!');
+            } catch (err) { toast.error(err.response?.data?.message || 'Payment failed on server'); }
+            setLoading(false);
+          },
+          theme: { color: '#F97316' }
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+          toast.error(response.error.description || 'Payment Failed');
+          setLoading(false);
+        });
+        rzp.open();
+      } else {
+        // Full coin payment
+        const res = await processPayment(payload);
+        setResult(res.data.data);
+        toast.success('Payment processed!');
+        setLoading(false);
+      }
+    } catch (err) { 
+      toast.error(err.response?.data?.message || 'Failed to initiate payment'); 
+      setLoading(false);
+    }
   }
 
   if (result) return (

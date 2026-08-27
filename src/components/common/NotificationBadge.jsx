@@ -6,7 +6,7 @@ import { getNotifications } from '../../services/api';
 export default function NotificationBadge({ userType }) {
   const [count, setCount] = useState(0);
   const navigate          = useNavigate();
-  const path = userType === 'user' ? '/user/notifications' : userType === 'vendor' ? '/vendor/notifications' : '/admin/dashboard';
+  const path = userType === 'user' ? '/user/notifications' : userType === 'vendor' ? '/vendor/notifications' : '/admin/notifications';
 
   useEffect(() => {
     getNotifications({ unread: '1', limit: 1 }).then(res => {

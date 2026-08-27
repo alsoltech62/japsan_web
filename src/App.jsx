@@ -33,6 +33,8 @@ import VendorRewardSettings from './pages/vendor/VendorRewardSettings';
 import VendorOfferManagement from './pages/vendor/VendorOfferManagement';
 import VendorCampaigns from './pages/vendor/VendorCampaigns';
 import VendorProfile from './pages/vendor/VendorProfile';
+import VendorNotifications from './pages/vendor/VendorNotifications';
+import VendorBuyCoins from './pages/vendor/VendorBuyCoins';
 
 // Admin
 import AdminLayout from './components/admin/AdminLayout';
@@ -42,6 +44,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminVendors from './pages/admin/AdminVendors';
 import AdminWithdrawals from './pages/admin/AdminWithdrawals';
 import AdminTransactions from './pages/admin/AdminTransactions';
+import AdminNotifications from './pages/admin/AdminNotifications';
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { isAuthenticated, user } = useAuth();
@@ -92,10 +95,12 @@ export default function App() {
             <Route path="wallet" element={<VendorWallet />} />
             <Route path="withdraw" element={<VendorWithdraw />} />
             <Route path="referral" element={<VendorReferral />} />
+            <Route path="notifications" element={<VendorNotifications />} />
             <Route path="reward-settings" element={<VendorRewardSettings />} />
             <Route path="offers" element={<VendorOfferManagement />} />
             <Route path="campaigns" element={<VendorCampaigns />} />
             <Route path="profile" element={<VendorProfile />} />
+            <Route path="buy-coins" element={<VendorBuyCoins />} />
           </Route>
 
           {/* ADMIN ROUTES */}
@@ -106,6 +111,7 @@ export default function App() {
             <Route path="vendors" element={<AdminVendors />} />
             <Route path="withdrawals" element={<AdminWithdrawals />} />
             <Route path="transactions" element={<AdminTransactions />} />
+            <Route path="notifications" element={<AdminNotifications />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

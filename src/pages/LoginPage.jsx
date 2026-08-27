@@ -72,13 +72,13 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
       {/* App Download Popup */}
       {showPopup && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-4 animate-bounce w-11/12 max-w-md border border-orange-200">
-          <img src="/JapSan.png" alt="App Icon" className="w-12 h-12 rounded-xl" />
-          <div className="flex-1">
-            <h3 className="font-bold text-slate-800 text-sm">Download Japsan Pay App</h3>
-            <p className="text-xs text-slate-500">Get the best experience on mobile!</p>
+        <div className="fixed bottom-6 lg:bottom-auto lg:top-6 left-0 right-0 mx-auto z-50 bg-white rounded-2xl shadow-2xl p-3 sm:p-4 flex items-center gap-3 animate-bounce w-[92%] max-w-sm border border-orange-200">
+          <img src="/JapSan.png" alt="App Icon" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl" />
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-slate-800 text-sm truncate">Download Japsan Pay</h3>
+            <p className="text-xs text-slate-500 truncate">Best experience on mobile!</p>
           </div>
-          <a href="https://play.google.com/store/apps/details?id=com.japsanpay.app&hl=en_IN" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg hover:shadow-orange-500/50 transition-all">
+          <a href="https://play.google.com/store/apps/details?id=com.japsanpay.app&hl=en_IN" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg hover:shadow-orange-500/50 transition-all flex-shrink-0">
             Install
           </a>
           <button onClick={() => setShowPopup(false)} className="absolute -top-2 -right-2 bg-slate-200 text-slate-600 rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-slate-300">

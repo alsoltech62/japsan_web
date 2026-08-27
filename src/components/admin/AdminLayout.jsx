@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiHome, FiSettings, FiUsers, FiGrid, FiDollarSign, FiList, FiMenu, FiX, FiLogOut } from 'react-icons/fi';
+import { FiHome, FiSettings, FiUsers, FiGrid, FiDollarSign, FiList, FiMenu, FiX, FiLogOut, FiBell } from 'react-icons/fi';
 
 const navItems = [
   { to: '/admin/dashboard', icon: <FiHome size={18} />, label: 'Dashboard' },
@@ -9,6 +9,7 @@ const navItems = [
   { to: '/admin/vendors', icon: <FiGrid size={18} />, label: 'Vendors' },
   { to: '/admin/withdrawals', icon: <FiDollarSign size={18} />, label: 'Withdrawals' },
   { to: '/admin/transactions', icon: <FiList size={18} />, label: 'Transactions' },
+  { to: '/admin/notifications', icon: <FiBell size={18} />, label: 'Notifications' },
   { to: '/admin/settings', icon: <FiSettings size={18} />, label: 'Settings' },
 ];
 

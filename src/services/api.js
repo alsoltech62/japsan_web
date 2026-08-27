@@ -69,6 +69,8 @@ export const getRewardSettings = () => api.get('/vendors/reward_settings.php');
 export const updateRewardSettings = (data) => api.put('/vendors/reward_settings.php', data);
 export const getVendorOffers = () => api.get('/vendors/offers.php');
 export const createVendorOffer = (data) => api.post('/vendors/offers.php', data);
+export const updateVendorOffer = (data) => api.put('/vendors/offers.php', data);
+export const deleteVendorOffer = (id) => api.delete(`/vendors/offers.php?id=${id}`);
 export const sendVendorCampaign = (data) => api.post('/vendors/campaigns.php', data);
 
 // ── REFERRAL ──────────────────────────────────────────────────

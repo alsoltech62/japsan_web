@@ -1,5 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
+import { useAuth } from '../../context/AuthContext';
 
 const TYPE_CONFIG = {
   coin_purchase:  { icon:'🛒', label:'Coin Purchase',   color:'badge-info'   },
@@ -15,6 +16,8 @@ const TYPE_CONFIG = {
 };
 
 export default function TransactionList({ transactions = [], emptyMessage = 'No transactions yet' }) {
+  const { isUser } = useAuth();
+  
   if (!transactions.length) return (
     <div className="text-center py-12 text-slate-400">
       <div className="text-5xl mb-3">📋</div>
@@ -26,8 +29,17 @@ export default function TransactionList({ transactions = [], emptyMessage = 'No 
     <div className="space-y-3">
       {transactions.map(tx => {
         const cfg   = TYPE_CONFIG[tx.type] || { icon:'💰', label:tx.type, color:'badge-info' };
-        const isPos = ['cashback','referral_reward','admin_credit','coin_purchase'].includes(tx.type);
-        const coinsAmt = Number(tx.coins_amount || 0);
+        
+        let isPos = true;
+        if (['payment', 'transfer_out', 'admin_debit', 'vendor_withdrawal', 'withdrawal_fee'].includes(tx.type)) {
+            isPos = false;
+        }
+
+        let coinsAmt = Number(tx.coins_amount || 0);
+        if (tx.type === 'payment' && isUser) {
+            coinsAmt = Number(tx.coins_used || 0);
+        }
+
         const inrAmt   = Number(tx.amount_inr || 0);
         return (
           <div key={tx.id} className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-100 hover:border-orange-100 hover:shadow-sm transition-all">
