@@ -45,6 +45,7 @@ import AdminVendors from './pages/admin/AdminVendors';
 import AdminWithdrawals from './pages/admin/AdminWithdrawals';
 import AdminTransactions from './pages/admin/AdminTransactions';
 import AdminNotifications from './pages/admin/AdminNotifications';
+import AdminPackages from './pages/admin/AdminPackages';
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { isAuthenticated, user } = useAuth();
@@ -109,6 +110,7 @@ export default function App() {
             <Route path="settings" element={<AdminSettings />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="vendors" element={<AdminVendors />} />
+            <Route path="packages" element={<AdminPackages />} />
             <Route path="withdrawals" element={<AdminWithdrawals />} />
             <Route path="transactions" element={<AdminTransactions />} />
             <Route path="notifications" element={<AdminNotifications />} />

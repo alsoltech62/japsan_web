@@ -70,7 +70,7 @@ export default function VendorWallet() {
       
       <div className="grid grid-cols-1 gap-3">
         <div className="bg-white rounded-2xl p-4 border border-slate-100">
-          <p className="text-xs text-slate-400">Cash Wallet</p>
+          <p className="text-xs text-slate-400">Cash Wallet <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full ml-2" title="This is your reimbursement for the coin discounts used by your customers. You can withdraw this to your bank.">ℹ️ Reimbursements</span></p>
           <p className="text-2xl font-black text-green-600">₹{Number(w.cash_wallet_balance||0).toFixed(2)}</p>
         </div>
       </div>

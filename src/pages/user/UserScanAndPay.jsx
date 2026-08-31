@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { scanVendorQR, userPayVendor, userTransfer, getWallet } from '../../services/api';
+import { scanVendorQR, userPayVendor, userTransfer, getWallet, createRazorpayOrder } from '../../services/api';
 import { FiCamera, FiCheckCircle, FiX, FiImage } from 'react-icons/fi';
 import { QrReader } from 'react-qr-reader';
 import jsQR from 'jsqr';
@@ -33,8 +33,26 @@ export default function UserScanAndPay() {
   }, [user, navigate]);
 
   const handleScan = async (scannedText) => {
-    const query = scannedText || vendorId;
+    let query = scannedText || vendorId;
     if (!query) return toast.error('Enter Vendor/User ID to simulate scan');
+    
+    try {
+      const parsed = JSON.parse(query);
+      if (parsed.vendor_id) query = parsed.vendor_id;
+      else if (parsed.user_id) query = parsed.user_id;
+    } catch (e) {
+      // Fallback: extract ID using regex if it's malformed/truncated JSON
+      const vendorMatch = query.match(/"vendor_id"\s*:\s*"?(\d+)"?/);
+      if (vendorMatch) {
+        query = vendorMatch[1];
+      } else {
+        const userMatch = query.match(/"user_id"\s*:\s*"?(\d+)"?/);
+        if (userMatch) {
+          query = userMatch[1];
+        }
+      }
+    }
+
     setLoading(true);
     try {
       const res = await scanVendorQR(query);
@@ -96,30 +114,83 @@ export default function UserScanAndPay() {
   const handlePayVendor = async () => {
     if (!billAmount || isNaN(billAmount)) return toast.error('Enter valid bill amount');
     if (pin.length < 4) return toast.error('Enter 4-digit PIN');
+
+    const amt = Number(billAmount);
+    const coins = Number(coinsToUse || 0);
+    const discount = coins * 0.70;
+    const cashToPay = Math.max(0, amt - discount);
+
     setLoading(true);
+
     try {
-      const payload = {
-        vendor_id: vendorDetails.id,
-        bill_amount: Number(billAmount),
-        coins_to_use: Number(coinsToUse || 0),
-        payment_method: 'online',
-        pin: pin
-      };
-      const res = await userPayVendor(payload);
-      if (res.data.success) {
-        toast.success('Payment successful!');
-        navigate('/user/dashboard');
+      if (cashToPay > 0) {
+        // Require online payment for the remaining cash via Razorpay
+        const orderRes = await createRazorpayOrder({ amount_inr: cashToPay });
+        const { order_id, amount } = orderRes.data.data;
+
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY,
+          amount: amount,
+          currency: "INR",
+          name: vendorDetails.business_name || vendorDetails.owner_name || "Japsan Vendor",
+          description: `Payment of ₹${cashToPay}`,
+          order_id: order_id,
+          handler: async function (response) {
+            try {
+              const payload = {
+                vendor_id: vendorDetails.id,
+                bill_amount: amt,
+                coins_to_use: coins,
+                payment_method: 'online',
+                pin: pin,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              };
+              const res = await userPayVendor(payload);
+              if (res.data.success) {
+                toast.success('Payment successful!');
+                navigate('/user/dashboard');
+              } else {
+                toast.error(res.data.message || 'Payment failed');
+              }
+            } catch (err) {
+              toast.error(err.response?.data?.message || 'Payment processing failed');
+            }
+          },
+          theme: { color: "#f97316" }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+          toast.error(response.error.description || 'Payment failed');
+        });
+        rzp.open();
+        setLoading(false);
       } else {
-        toast.error(res.data.message || 'Payment failed');
+        // Fully paid with coins
+        const payload = {
+          vendor_id: vendorDetails.id,
+          bill_amount: amt,
+          coins_to_use: coins,
+          payment_method: 'online',
+          pin: pin
+        };
+        const res = await userPayVendor(payload);
+        if (res.data.success) {
+          toast.success('Payment successful!');
+          navigate('/user/dashboard');
+        } else {
+          toast.error(res.data.message || 'Payment failed');
+        }
+        setLoading(false);
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Payment processing failed';
-      toast.error(msg);
+      toast.error(err.response?.data?.message || 'Failed to initiate payment');
+      setLoading(false);
       if (err.response?.data?.data?.profile_incomplete) {
         navigate('/user/profile');
       }
-    } finally {
-      setLoading(false);
     }
   };
 

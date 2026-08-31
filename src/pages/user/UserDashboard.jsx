@@ -41,7 +41,7 @@ export default function UserDashboard() {
             </div>
             
             <h2 className="text-3xl font-black mb-1">{Number(w.coin_balance || 0).toLocaleString()} <span className="text-orange-400 text-2xl">JC</span></h2>
-            <p className="text-slate-400 text-xs font-medium mb-6">≈ ₹{Number(w.cash_wallet_balance || 0).toFixed(2)}</p>
+            <p className="text-slate-400 text-xs font-medium mb-6">≈ ₹{((w.coin_balance || 0) * (data?.redemption_rate || 0.7)).toFixed(2)}</p>
             
             <button className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white transition-colors">
               Wallet Details &gt;

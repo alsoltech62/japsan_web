@@ -132,8 +132,23 @@ export default function AdminVendors() {
                           className="text-xs px-2 py-1 rounded-lg bg-orange-100 text-orange-700 font-medium">Cashback %</button>
                         <button onClick={() => setModal({ type: 'adjust', vendorId: v.id, name: v.business_name })}
                           className="text-xs px-2 py-1 rounded-lg bg-purple-100 text-purple-700 font-medium">Adjust</button>
+                        <button onClick={() => { 
+                          setForm({ 
+                            business_name: v.business_name, 
+                            owner_name: v.owner_name || '', 
+                            email: v.email || '', 
+                            business_type: v.business_type || '', 
+                            city: v.city || '', 
+                            business_address: v.business_address || '' 
+                          }); 
+                          setModal({ type: 'edit_vendor', vendor: v }); 
+                        }} className="text-xs px-2 py-1 rounded-lg bg-indigo-100 text-indigo-700 font-medium">Edit</button>
                         <button onClick={() => setModal({ type: 'profile', vendor: v })}
                           className="text-xs px-2 py-1 rounded-lg bg-blue-100 text-blue-700 font-medium">Profile</button>
+                        <a href={`https://wa.me/${(v.phone || '').replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" 
+                          className="text-xs px-2 py-1 rounded-lg bg-green-100 text-green-700 font-medium flex items-center justify-center">
+                          WhatsApp
+                        </a>
                       </div>
                     </td>
                   </tr>
@@ -226,7 +241,56 @@ export default function AdminVendors() {
                     <span className="text-slate-500">Total Revenue:</span><span className="font-medium text-right">₹{modal.vendor.total_revenue_generated || 0}</span>
                   </div>
                 </div>
-                <button onClick={() => setModal(null)} className="btn-secondary w-full">Close</button>
+                <div className="flex gap-2">
+                  <button onClick={() => { 
+                    setForm({ 
+                      business_name: modal.vendor.business_name, 
+                      owner_name: modal.vendor.owner_name || '', 
+                      email: modal.vendor.email || '', 
+                      business_type: modal.vendor.business_type || '', 
+                      city: modal.vendor.city || '', 
+                      business_address: modal.vendor.business_address || '' 
+                    }); 
+                    setModal({ type: 'edit_vendor', vendor: modal.vendor }); 
+                  }} className="btn-primary flex-1">Edit</button>
+                  <a href={`https://wa.me/${modal.vendor.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="btn-secondary flex-1 text-center bg-green-100 text-green-700 border-green-200 hover:bg-green-200">WhatsApp</a>
+                  <button onClick={() => setModal(null)} className="btn-secondary flex-1">Close</button>
+                </div>
+              </>
+            )}
+            {modal.type === 'edit_vendor' && (
+              <>
+                <h3 className="font-bold text-xl mb-4">Edit Vendor — {modal.vendor.business_name}</h3>
+                <div className="space-y-3 mb-6 max-h-[60vh] overflow-y-auto pr-2">
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Business Name</label>
+                    <input type="text" className="input-field" value={form.business_name || ''} onChange={e => setForm({...form, business_name: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Owner Name</label>
+                    <input type="text" className="input-field" value={form.owner_name || ''} onChange={e => setForm({...form, owner_name: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Email</label>
+                    <input type="email" className="input-field" value={form.email || ''} onChange={e => setForm({...form, email: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Business Type</label>
+                    <input type="text" className="input-field" value={form.business_type || ''} onChange={e => setForm({...form, business_type: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">City</label>
+                    <input type="text" className="input-field" value={form.city || ''} onChange={e => setForm({...form, city: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Address</label>
+                    <input type="text" className="input-field" value={form.business_address || ''} onChange={e => setForm({...form, business_address: e.target.value})} />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => doAction('update_profile', modal.vendor.id, form)} className="btn-primary flex-1">Save</button>
+                  <button onClick={() => setModal({ type: 'profile', vendor: modal.vendor })} className="btn-secondary flex-1">Cancel</button>
+                </div>
               </>
             )}
           </div>

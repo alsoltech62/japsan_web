@@ -143,10 +143,18 @@ export default function AdminUsers() {
                           className="text-xs px-3 py-1 rounded-lg font-medium bg-orange-100 text-orange-700">
                           Adjust
                         </button>
+                        <button onClick={() => { setForm({ name: u.name, email: u.email || '', city: u.city || '', area: u.area || '' }); setModal({ type: 'edit_user', user: u }); }}
+                          className="text-xs px-3 py-1 rounded-lg font-medium bg-indigo-100 text-indigo-700">
+                          Edit
+                        </button>
                         <button onClick={() => setModal({ type: 'profile', user: u })}
                           className="text-xs px-3 py-1 rounded-lg font-medium bg-blue-100 text-blue-700">
                           Profile
                         </button>
+                        <a href={`https://wa.me/${(u.phone || '').replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" 
+                          className="text-xs px-3 py-1 rounded-lg font-medium bg-green-100 text-green-700 flex items-center justify-center">
+                          WhatsApp
+                        </a>
                       </div>
                     </td>
                   </tr>
@@ -222,7 +230,38 @@ export default function AdminUsers() {
                     <span className="text-slate-500">Registered:</span><span className="font-medium text-right">{modal.user.created_at}</span>
                   </div>
                 </div>
-                <button onClick={() => setModal(null)} className="btn-secondary w-full">Close</button>
+                <div className="flex gap-2">
+                  <button onClick={() => { setForm({ name: modal.user.name, email: modal.user.email || '', city: modal.user.city || '', area: modal.user.area || '' }); setModal({ type: 'edit_user', user: modal.user }); }} className="btn-primary flex-1">Edit</button>
+                  <a href={`https://wa.me/${modal.user.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="btn-secondary flex-1 text-center bg-green-100 text-green-700 border-green-200 hover:bg-green-200">WhatsApp</a>
+                  <button onClick={() => setModal(null)} className="btn-secondary flex-1">Close</button>
+                </div>
+              </>
+            )}
+            {modal.type === 'edit_user' && (
+              <>
+                <h3 className="font-bold text-xl mb-4">Edit User — {modal.user.name}</h3>
+                <div className="space-y-3 mb-6">
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Name</label>
+                    <input type="text" className="input-field" value={form.name || ''} onChange={e => setForm({...form, name: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Email</label>
+                    <input type="email" className="input-field" value={form.email || ''} onChange={e => setForm({...form, email: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">City</label>
+                    <input type="text" className="input-field" value={form.city || ''} onChange={e => setForm({...form, city: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-slate-700">Area</label>
+                    <input type="text" className="input-field" value={form.area || ''} onChange={e => setForm({...form, area: e.target.value})} />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => doAction('update_profile', modal.user.id, form)} className="btn-primary flex-1">Save</button>
+                  <button onClick={() => setModal({ type: 'profile', user: modal.user })} className="btn-secondary flex-1">Cancel</button>
+                </div>
               </>
             )}
           </div>

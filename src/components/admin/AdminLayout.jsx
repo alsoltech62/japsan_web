@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FiHome, FiSettings, FiUsers, FiGrid, FiDollarSign, FiList, FiMenu, FiX, FiLogOut, FiBell } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 
 const navItems = [
   { to: '/admin/dashboard', icon: <FiHome size={18} />, label: 'Dashboard' },
   { to: '/admin/users', icon: <FiUsers size={18} />, label: 'Users' },
   { to: '/admin/vendors', icon: <FiGrid size={18} />, label: 'Vendors' },
+  { to: '/admin/packages', icon: <FiList size={18} />, label: 'Coin Packages' },
   { to: '/admin/withdrawals', icon: <FiDollarSign size={18} />, label: 'Withdrawals' },
   { to: '/admin/transactions', icon: <FiList size={18} />, label: 'Transactions' },
   { to: '/admin/notifications', icon: <FiBell size={18} />, label: 'Notifications' },
@@ -17,6 +19,38 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [lastNotifId, setLastNotifId] = useState(null);
+
+  React.useEffect(() => {
+    let mounted = true;
+    const checkNotifs = async () => {
+      try {
+        const token = localStorage.getItem('japsan_token');
+        if (!token) return;
+        const res = await fetch('https://japsanpay.com/backend/api/notifications/list.php?unread=1&limit=1', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && data.data?.notifications?.length > 0) {
+          const latest = data.data.notifications[0];
+          if (mounted) {
+            setLastNotifId(prev => {
+              if (prev !== null && prev < latest.id) {
+                toast(`New Notification: ${latest.title}`, {
+                  icon: '🔔',
+                  duration: 5000,
+                });
+              }
+              return latest.id;
+            });
+          }
+        }
+      } catch (e) {}
+    };
+    checkNotifs();
+    const interval = setInterval(checkNotifs, 10000); // 10s poll
+    return () => { mounted = false; clearInterval(interval); };
+  }, []);
 
   return (
     <div className="min-h-screen flex bg-slate-50">

@@ -35,7 +35,10 @@ export default function VendorDashboard() {
             </div>
             
             <h2 className="text-3xl font-black mb-1">{Number(w.coin_balance || 0).toLocaleString()} <span className="text-orange-400 text-2xl">JC</span></h2>
-            <p className="text-slate-400 text-xs font-medium mb-6">≈ ₹{Number(w.cash_wallet_balance || 0).toFixed(2)}</p>
+            <div className="flex items-center gap-2 mb-6">
+              <p className="text-slate-400 text-xs font-medium">Cash Wallet: ₹{Number(w.cash_wallet_balance || 0).toFixed(2)}</p>
+              <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700" title="This is your reimbursement for the coin discounts used by your customers. You can withdraw this to your bank.">ℹ️ Coin Reimbursements</span>
+            </div>
             
             <button className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white transition-colors">
               Wallet Details &gt;

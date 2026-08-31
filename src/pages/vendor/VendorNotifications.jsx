@@ -60,8 +60,21 @@ export default function VendorNotifications() {
                   <p className={`font-semibold text-sm ${n.is_read ? 'text-slate-700' : 'text-slate-900'}`}>{n.title}</p>
                   {!n.is_read && <span className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0 mt-1.5"/>}
                 </div>
-                <p className="text-xs text-slate-500 mt-1">{n.message}</p>
-                <p className="text-xs text-slate-400 mt-1">{n.created_at ? format(new Date(n.created_at), 'dd MMM, hh:mm a') : ''}</p>
+                {(() => {
+                  const imgMatch = n.message.match(/\[IMG:(.+?)\]/);
+                  const textMessage = n.message.replace(/\[IMG:.+?\]/, '');
+                  return (
+                    <>
+                      <p className="text-xs text-slate-500 mt-1 whitespace-pre-wrap">{textMessage}</p>
+                      {imgMatch && imgMatch[1] && (
+                        <div className="mt-2">
+                          <img src={`${import.meta.env.VITE_API_URL || 'http://localhost/japsan-coin-ecosystem/japsan-coin-ecosystem/japsan-coin-ecosystem/backend'}${imgMatch[1]}`} alt="Notification" className="w-full max-h-48 object-cover rounded-xl border border-slate-200" />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+                <p className="text-xs text-slate-400 mt-2">{n.created_at ? format(new Date(n.created_at), 'dd MMM, hh:mm a') : ''}</p>
               </div>
             </div>
           ))}

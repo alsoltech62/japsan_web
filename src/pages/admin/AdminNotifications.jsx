@@ -6,9 +6,10 @@ export default function AdminNotifications() {
   const [form, setForm] = useState({
     target: 'all',
     title: '',
-    message: '',
-    image_url: ''
+    message: ''
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -19,13 +20,37 @@ export default function AdminNotifications() {
 
     setLoading(true);
     try {
-      await api.post('/admin/send_notification.php', form);
+      const formData = new FormData();
+      formData.append('target', form.target);
+      formData.append('title', form.title);
+      formData.append('message', form.message);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
+      await api.post('/admin/send_notification.php', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
       toast.success("Notifications sent successfully!");
-      setForm({ target: 'all', title: '', message: '', image_url: '' });
+      setForm({ target: 'all', title: '', message: '' });
+      setImageFile(null);
+      setImagePreview(null);
     } catch (err) {
       toast.error(err.message || 'Failed to send notifications');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image size must be less than 2MB");
+        return;
+      }
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -75,18 +100,18 @@ export default function AdminNotifications() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">Image URL (Optional)</label>
+            <label className="block text-sm font-bold text-slate-700 mb-1">Image Upload (Optional)</label>
+            <p className="text-xs text-slate-500 mb-2">Recommended: 16:9 aspect ratio (e.g. 800x450). Max size: 2MB.</p>
             <input 
-              type="url" 
+              type="file" 
+              accept="image/*"
               className="input-field" 
-              placeholder="https://example.com/image.png" 
-              value={form.image_url}
-              onChange={e => setForm({...form, image_url: e.target.value})}
+              onChange={handleImageChange}
             />
-            {form.image_url && (
+            {imagePreview && (
               <div className="mt-2">
                 <p className="text-xs text-slate-500 mb-1">Image Preview:</p>
-                <img src={form.image_url} alt="Preview" className="max-h-32 rounded-lg border border-slate-200" onError={(e) => e.target.style.display='none'} />
+                <img src={imagePreview} alt="Preview" className="max-h-32 rounded-lg border border-slate-200" />
               </div>
             )}
           </div>

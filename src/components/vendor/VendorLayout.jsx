@@ -29,7 +29,7 @@ export default function VendorLayout() {
           <img src="/JapSan.png" alt="Logo" className="w-8 h-8 rounded-lg" />
           <div>
             <p className="font-bold text-slate-900 text-sm leading-tight">Vendor Panel</p>
-            <p className="text-[10px] text-slate-500 font-medium">{user?.name}</p>
+            <p className="text-[10px] text-slate-500 font-medium">{user?.business_name || user?.name}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
