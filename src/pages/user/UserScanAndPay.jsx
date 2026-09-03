@@ -125,7 +125,13 @@ export default function UserScanAndPay() {
     try {
       if (cashToPay > 0) {
         // Require online payment for the remaining cash via Razorpay
-        const orderRes = await createRazorpayOrder({ amount_inr: cashToPay });
+        const orderRes = await createRazorpayOrder({ 
+          amount_inr: cashToPay,
+          vendor_id: vendorDetails.id,
+          bill_amount: amt,
+          coins_to_use: coins,
+          pin: pin
+        });
         const { order_id, amount } = orderRes.data.data;
 
         const options = {
